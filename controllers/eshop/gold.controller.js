@@ -28,7 +28,9 @@ const updateGold = async(req,res)=>{
         const id = req.params?.id;
         const {carat,pricePerGram,making_charge,wastage_charge} = req.body 
         if(!carat || !pricePerGram) throw new Error("Both field are required!")
-        await Gold_eshop.findByIdAndUpdate(id,{carat,pricePerGram,making_charge,wastage_charge})
+        const makingCharge = making_charge ? making_charge:null
+        const wastageCharge = wastage_charge ? wastage_charge:null
+        await Gold_eshop.findByIdAndUpdate(id,{carat,pricePerGram,making_charge:makingCharge,wastage_charge:wastageCharge})
         res.status(200).json({message:"Updated Successfully"})
     } catch (error) {
         res.status(400).json({error:error.message})
