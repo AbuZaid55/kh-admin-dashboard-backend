@@ -53,7 +53,7 @@ async function createAdmin(phone, email, password) {
 
 // USER AUTH API 
 app.use(cors({
-    origin:ALLOWED_ORIGINS,
+    origin:"*",
     credentials:true
 }))
 
