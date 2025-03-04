@@ -19,7 +19,7 @@ const ProductSchema_eshop = new mongoose.Schema(
     images2: [{ _id: false, key: String, url: String }],
     images3: [{ _id: false, key: String, url: String }],
 
-    product_weight: { type: Number,default:0},
+    product_weight: { type: Number, default: 0 },
     total_gold_weight: { type: Number, required: true },
 
     diamond_discount: { type: mongoose.Schema.Types.ObjectId, ref: "Discount_eshop" },
@@ -32,14 +32,14 @@ const ProductSchema_eshop = new mongoose.Schema(
         _id: false,
         diamond: { type: mongoose.Schema.Types.ObjectId, ref: "Diamond_eshop", required: true },
         same_pcs: { type: Number, required: true },
-        pcs: [{ _id: false, count: {type:Number,required:true}, weight: {type:Number,required:true} }],
+        pcs: [{ _id: false, count: { type: Number, required: true }, weight: { type: Number, required: true } }],
       },
     ],
 
     // Gemstone Details (if applicable)
     gemstone_name: { type: String },
-    gemstone_price: { type: Number,default:0 },
-    gemstone_weight: { type: Number,default:0 },
+    gemstone_price: { type: Number, default: 0 },
+    gemstone_weight: { type: Number, default: 0 },
     gemstone_type: { type: String },
 
     // Other Costs
@@ -51,7 +51,7 @@ const ProductSchema_eshop = new mongoose.Schema(
 
     // GST %
     gst_percent: { type: Number, default: 0 },
-    isItRing: {type:Boolean,default:false},
+    isItRing: { type: Boolean, default: false },
 
     // Product Dimensions
     height: { type: String },
@@ -75,7 +75,7 @@ ProductSchema_eshop.pre("save", async function (next) {
       ],
     }
   )
-  .sort({ createdAt: -1 }) 
+    .sort({ createdAt: -1 })
 
   const gold_discount = await Discount.findOne(
     {
@@ -87,7 +87,7 @@ ProductSchema_eshop.pre("save", async function (next) {
       ],
     }
   )
-  .sort({ createdAt: -1 }) 
+    .sort({ createdAt: -1 })
 
   const discount_on_total = await Discount.findOne(
     {
@@ -99,15 +99,15 @@ ProductSchema_eshop.pre("save", async function (next) {
       ],
     }
   )
-  .sort({ createdAt: -1 }) 
+    .sort({ createdAt: -1 })
 
   if (diamond_discount && !diamond_discount.product) {
     this.diamond_discount = diamond_discount._id
   }
-  if(gold_discount && !gold_discount.product){
-    this.gold_discount = gold_discount._id 
+  if (gold_discount && !gold_discount.product) {
+    this.gold_discount = gold_discount._id
   }
-  if(discount_on_total && !discount_on_total.product){
+  if (discount_on_total && !discount_on_total.product) {
     this.discount_on_total = discount_on_total._id
   }
 
@@ -116,18 +116,16 @@ ProductSchema_eshop.pre("save", async function (next) {
 
 ProductSchema_eshop.pre("deleteMany", async function (next) {
   try {
-    const products = await this.model.find(this.getFilter()); 
+    const products = await this.model.find(this.getFilter());
 
     const keysToDelete = products.flatMap((product) => [
-      ...product.images1.map((img) => img.key),
-      ...product.images2.map((img) => img.key),
-      ...product.images3.map((img) => img.key),
+      ...(product.images1?.map((img) => img.key) || []),
+      ...(product.images2?.map((img) => img.key) || []),
+      ...(product.images3?.map((img) => img.key) || []),
     ]);
 
     if (keysToDelete.length > 0) {
-      for (const key of keysToDelete) {
-        await deleteFileFromS3(key);
-      }
+      await Promise.all(keysToDelete.map((key) => deleteFileFromS3(key)));
     }
 
     next();
