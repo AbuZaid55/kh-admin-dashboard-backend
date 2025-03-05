@@ -34,6 +34,7 @@ const uploadFilesOnS3 = async (req, res, next) => {
     { name: "images3"}, 
     { name: "images"}, 
     { name: "image"}, 
+    { name: "nav_image"}, 
   ])(req, res, (err) => {
     if (err) {
       if (err instanceof multer.MulterError) {
@@ -51,6 +52,7 @@ const uploadFilesOnS3 = async (req, res, next) => {
     const imageUrls3 = req.files?.images3 ? req.files.images3.map((file) => ({ url: file.location, key: file.key })) : [];
     const imageUrls = req.files?.images ? req.files.images.map((file) => ({ url: file.location, key: file.key })) : [];
     const imageUrl = req.files?.image ? req.files.image.map((file) => ({ url: file.location, key: file.key })) : null;
+    const navImageUrl = req.files?.nav_image ? req.files.nav_image.map((file) => ({ url: file.location, key: file.key })) : null;
     
     // Store image URLs in the request object
     req.imageUrls1 = imageUrls1;
@@ -58,7 +60,7 @@ const uploadFilesOnS3 = async (req, res, next) => {
     req.imageUrls3 = imageUrls3;
     req.imageUrls = imageUrls;
     req.imageUrl = imageUrl ? imageUrl[0] : null;
-
+    req.navImageUrl = navImageUrl ? navImageUrl[0] : null;
 
     next();
   });

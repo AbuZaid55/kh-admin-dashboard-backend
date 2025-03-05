@@ -55,7 +55,7 @@ const ProductSchema_eshop = new mongoose.Schema(
 
     // Product Dimensions
     height: { type: String },
-    weight: { type: String },
+    width: { type: String },
 
     // Recommended For
     recommendedFor: [{ type: String }],
