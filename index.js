@@ -58,13 +58,13 @@ app.use(cors({
     credentials:true
 }))
 
-// app.get("/test",(req,res)=>{
-//     res.status(200).json({message:"Success"})
-// })
-// app.use("/user/auth",userRouter);
-// app.use("/user/profile/",userProfileRouter);
-// app.use('/api/press-releases', pressReleaseRoutes);
-// app.use('/store/eshop', storeEshopRouter);
+app.get("/test",(req,res)=>{
+    res.status(200).json({message:"Success"})
+})
+app.use("/user/auth",userRouter);
+app.use("/user/profile/",userProfileRouter);
+app.use('/api/press-releases', pressReleaseRoutes);
+app.use('/store/eshop', storeEshopRouter);
 
 
 // app.use("/admin/auth", adminAuthRouter);
