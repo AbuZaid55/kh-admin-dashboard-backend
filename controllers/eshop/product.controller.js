@@ -32,17 +32,17 @@ const addProduct = async (req, res) => {
 
     res.status(200).json({ message: "Added successfully" });
   } catch (error) {
-    if (req.imageUrls1.length > 0) {
+    if (req?.imageUrls1?.length > 0) {
       req.imageUrls1.map((obj) => {
         deleteFileFromS3(obj.key)
       })
     }
-    if (req.imageUrls2.length > 0) {
+    if (req?.imageUrls2?.length > 0) {
       req.imageUrls2.map((obj) => {
         deleteFileFromS3(obj.key)
       })
     }
-    if (req.imageUrls3.length > 0) {
+    if (req?.imageUrls3?.length > 0) {
       req.imageUrls3.map((obj) => {
         deleteFileFromS3(obj.key)
       })

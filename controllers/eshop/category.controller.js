@@ -1,14 +1,13 @@
 const Category_eshop = require("../../models/eshop/category.model");
-const Collection_eshop = require("../../models/eshop/collection.model");
 const Products_eshop = require("../../models/eshop/product.model");
 const Style_eshop = require("../../models/eshop/style.model");
 const { deleteFileFromS3 } = require("../../services/S3_Services");
 
 const addCategory = async (req, res) => {
+  const image = req?.imageUrl;
   try {
     const { name, description } = req.body;
     if (!name) throw new Error("Enter Category Name");
-    const image = req.imageUrl;
     
     // Create new Category
     const newCategory = new Category_eshop({ name,description, image });
@@ -16,6 +15,9 @@ const addCategory = async (req, res) => {
 
     res.status(200).json({ message: "Category Added Successfully" });
   } catch (error) {
+    if(image?.key){
+      deleteFileFromS3(image.key)
+  }
     res.status(400).json({ error: error.message });
   }
 };
@@ -37,17 +39,16 @@ const getStyles = async (req, res) => {
     const styles = data?.styles ? data.styles : []
     res.status(200).json(styles);
   } catch (error) {
-    console.log(error)
     res.status(400).json({ error: error.message });
   }
 };
 
 const updateCategory = async(req,res)=>{
+  const image = req?.imageUrl;
   try {
     const id = req.params?.id;
     const { name, description } = req.body;
     if (!name) throw new Error("Enter Category Name");
-    const image = req.imageUrl;
     const data = await Category_eshop.findById(id)
     if(!data) throw new Error("Category not exist!")
     if(image?.key){
@@ -59,6 +60,9 @@ const updateCategory = async(req,res)=>{
     await data.save()
     res.status(200).json({message:"Updated Successfully"})
   } catch (error) {
+    if(image?.key){
+      deleteFileFromS3(image.key)
+  }
     res.status(400).json({ error: error.message });
   }
 }
