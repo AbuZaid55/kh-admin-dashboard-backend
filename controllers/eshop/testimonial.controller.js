@@ -6,10 +6,10 @@ exports.createTestimonial = async (req, res) => {
   try {
     const { name, designation, testimonial } = req.body;
     // Local storage
-    const profile_img = req.file ? `/uploads/testimonial/${req.file.filename}` : null;
+    // const profile_img = req.file ? `/uploads/testimonial/${req.file.filename}` : null;
     
     // S3 storage 
-    // const profile_img = req.file ? { key: req.file.key, url: req.file.location } : null;
+    const profile_img = req.file ? { key: req.file.key, url: req.file.location } : null;
 
     const newTestimonial = new Testimonial({ name, designation, testimonial, profile_img });
     await newTestimonial.save();
@@ -36,14 +36,14 @@ exports.updateTestimonial = async (req, res) => {
     const updatedData = { name, designation, testimonial };
 
     // Local storage
-    if (req.file) {
-      updatedData.profile_img = `/uploads/testimonial/${req.file.filename}`;
-    }
+    // if (req.file) {
+    //   updatedData.profile_img = `/uploads/testimonial/${req.file.filename}`;
+    // }
     
     // S3 storage
-    // if (req.file) {
-    //   updatedData.profile_img = { key: req.file.key, url: req.file.location };
-    // }
+    if (req.file) {
+      updatedData.profile_img = { key: req.file.key, url: req.file.location };
+    }
 
     const updatedTestimonial = await Testimonial.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     if (!updatedTestimonial) return res.status(404).json({ message: "Testimonial not found" });
@@ -60,9 +60,9 @@ exports.deleteTestimonial = async (req, res) => {
     if (!testimonial) return res.status(404).json({ message: "Testimonial not found" });
 
     // If using S3 storage, delete the file from S3
-    // if (testimonial.profile_img && testimonial.profile_img.key) {
-    //   await deleteFileFromS3(testimonial.profile_img.key);
-    // }
+    if (testimonial.profile_img && testimonial.profile_img.key) {
+      await deleteFileFromS3(testimonial.profile_img.key);
+    }
 
     await Testimonial.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Testimonial deleted successfully" });
