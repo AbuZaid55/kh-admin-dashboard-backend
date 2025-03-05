@@ -66,6 +66,28 @@ const uploadFilesOnS3 = async (req, res, next) => {
   });
 };
 
+// add this in services 
+const deleteFileByLocationFromS3 = async (fileUrl) => {
+    try {
+      // Extract fileKey from fileUrl
+      const fileKey = fileUrl.split(`${AWS_S3_BUCKET_NAME}/`)[1]; 
+  
+      if (!fileKey) {
+        throw new Error("Invalid S3 file URL");
+      }
+  
+      const params = {
+        Bucket: AWS_S3_BUCKET_NAME,
+        Key: fileKey,
+      };
+  
+      await s3.send(new DeleteObjectCommand(params));
+      console.log(`File deleted: ${fileKey}`);
+    } catch (error) {
+      console.error("Error deleting file:", error);
+    }
+  };
+
 
 
 const deleteFileFromS3 = async (fileKey) => {
@@ -76,4 +98,4 @@ const deleteFileFromS3 = async (fileKey) => {
   await s3.send(new DeleteObjectCommand(params));
 };
 
-module.exports = { uploadFilesOnS3, deleteFileFromS3 };
+module.exports = { uploadFilesOnS3, deleteFileFromS3 ,deleteFileByLocationFromS3,uploads};

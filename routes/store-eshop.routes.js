@@ -1,6 +1,7 @@
 const express = require("express")
 
-const { uploadFilesOnS3 } = require("../services/S3_Services")
+const { uploadFilesOnS3 } = require("../services/S3_Services");
+const { uploads } = require("../services/S3_Services");
 
 const { addCollection, getAllCollections, updateCollection, deleteCollection } = require("../controllers/eshop/collections.controller")
 const { addCategory, getAllCategories, getStyles, updateCategory, deleteCategory } = require("../controllers/eshop/category.controller")
@@ -13,6 +14,7 @@ const { addDiamond, getDiamonds, updateDiamond, deleteDiamond } = require("../co
 const { addLabor, getLabors, updateLabor, deleteLabor } = require("../controllers/eshop/labor.controller")
 const {addMakingCharge,getMakingCharges, updateMakingCharge, deleteMakingCharge} = require("../controllers/eshop/making_charge.controller")
 const {addWastageCharge,getWastageCharge, updateWastageCharge, deleteWastageCharge} = require("../controllers/eshop/wastage_charge.controller")
+const {landingPageUpdate,getLandingpage} =require("../controllers/eshop/landingpage.controller.js")
 
 const router = express.Router()
 
@@ -75,6 +77,16 @@ router.get("/products/get-product-for-update/:id",getProductForUpdate)
 router.put("/products/update-product/:id",uploadFilesOnS3,updateProduct)
 router.delete("/products/delete-product/:id",deleteProduct)
 router.post("/products/search-products",searchProducts)
+
+router.put("/eshop/landing-page", uploads.fields([
+    { name: "logo" },
+    { name: "hero_desktop_img" },
+    { name: "hero_mobile_img" },
+    { name: "ad_video" },
+    {name:"trending_img"}
+]),landingPageUpdate );
+
+router.get("/eshop/landing-page",getLandingpage);
 
 
 module.exports = router;
