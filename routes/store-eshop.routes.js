@@ -13,6 +13,7 @@ const { addDiamond, getDiamonds, updateDiamond, deleteDiamond } = require("../co
 const { addLabor, getLabors, updateLabor, deleteLabor } = require("../controllers/eshop/labor.controller")
 const {addMakingCharge,getMakingCharges, updateMakingCharge, deleteMakingCharge} = require("../controllers/eshop/making_charge.controller")
 const {addWastageCharge,getWastageCharge, updateWastageCharge, deleteWastageCharge} = require("../controllers/eshop/wastage_charge.controller")
+const { addRecommended, getRecommended, updateRecommended, deleteRecommended } = require("../controllers/eshop/recommended.controller")
 
 const router = express.Router()
 
@@ -27,9 +28,9 @@ router.get("/categories/:id/styles",getStyles)
 router.put("/categories/update-category/:id",uploadFilesOnS3,updateCategory)
 router.delete("/categories/delete-category/:id",deleteCategory)
 
-router.post("/styles/add-style",addStyle)
+router.post("/styles/add-style",uploadFilesOnS3,addStyle)
 router.get("/styles/get-all-styles",getAllStyles)
-router.put("/styles/update-style/:id",updateStyle)
+router.put("/styles/update-style/:id",uploadFilesOnS3,updateStyle)
 router.delete("/styles/delete-style/:id",deleteStyle)
 
 router.post("/colors/add-color",addColor)
@@ -75,6 +76,11 @@ router.get("/products/get-product-for-update/:id",getProductForUpdate)
 router.put("/products/update-product/:id",uploadFilesOnS3,updateProduct)
 router.delete("/products/delete-product/:id",deleteProduct)
 router.post("/products/search-products",searchProducts)
+
+router.post("/recommended/add-recommended",uploadFilesOnS3,addRecommended)
+router.get("/recommended/get-all-recommended",getRecommended)
+router.put("/recommended/update-recommended/:id",uploadFilesOnS3,updateRecommended)
+router.delete("/recommended/delete-recommended/:id",deleteRecommended)
 
 
 module.exports = router;
