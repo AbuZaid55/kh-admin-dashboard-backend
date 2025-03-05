@@ -10,6 +10,7 @@ const adminAuthRouter = require("./routes/admin.auth.routes.js");
 const testimonialRoutes = require('./routes/testimonial.routes.js');
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
 const storeEshopRouter = require("./routes/store-eshop.routes.js")
+const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
 
 const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
@@ -57,17 +58,18 @@ app.use(cors({
     credentials:true
 }))
 
-app.get("/test",(req,res)=>{
-    res.status(200).json({message:"Success"})
-})
-app.use("/user/auth",userRouter);
-app.use("/user/profile/",userProfileRouter);
-app.use('/api/press-releases', pressReleaseRoutes);
-app.use('/store/eshop', storeEshopRouter);
+// app.get("/test",(req,res)=>{
+//     res.status(200).json({message:"Success"})
+// })
+// app.use("/user/auth",userRouter);
+// app.use("/user/profile/",userProfileRouter);
+// app.use('/api/press-releases', pressReleaseRoutes);
+// app.use('/store/eshop', storeEshopRouter);
 
 
-app.use("/admin/auth", adminAuthRouter);
+// app.use("/admin/auth", adminAuthRouter);
 app.use("/api/testimonials", testimonialRoutes);
+app.use("/eshopBenefits", eshopBenefitsRoutes);
 
 
 // Not Found Route & Error Middleware 

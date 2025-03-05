@@ -27,6 +27,12 @@ const uploads = multer({
   },
 });
 
+// This helper can be used for single file upload for a given field name
+const uploadSingle = (fieldName) => {
+  return uploads.single(fieldName);
+};
+
+// This helper can be used for multiple file upload for a given field name
 const uploadFilesOnS3 = async (req, res, next) => {
   uploads.fields([
     { name: "images1"}, 
@@ -74,4 +80,4 @@ const deleteFileFromS3 = async (fileKey) => {
   await s3.send(new DeleteObjectCommand(params));
 };
 
-module.exports = { uploadFilesOnS3, deleteFileFromS3 };
+module.exports = { uploadSingle, uploadFilesOnS3, deleteFileFromS3 };
