@@ -2,26 +2,53 @@ const mongoose = require("mongoose");
 
 const LandingPageSchema = new mongoose.Schema(
   {
-    eshop_name:{type:String,default:"Gulz"},
-    scroll_text: { type: String, },
-    brand_web_link: { type: String, },
-    logo: { type: String,}, // File URL (S3 or local path)
-    logo_text: { type: String, },
-    hero_desktop_img: { type: String, }, // File URL
-    hero_mobile_img: { type: String, }, // File URL
-    hero_short_desc: { type: String,},
-    hero_desc: { type: String,  },
-    hero_message: { type: String,  },
-    ad_title: { type: String,  },
-    ad_desc: { type: String,  },
-    ad_video: { type: String,  }, // Video URL
-    trending_img:{type:String,},
-    trending_title:{type:String,},
-    trending_desc:{type:String,},
-    trending_slug_name:{type:String,},
-    trending_slug:{type:String,},
+   // Hero Section
+  eshop_name: { type: String, default: "Gulz", trim: true, maxlength: 100 },
+  scroll_text: { type: String, trim: true, maxlength: 255 },
+  brand_web_link: { type: String, trim: true,},
+  logo: { type: String, trim: true, }, // File URL Validation
+  logo_text: { type: String, trim: true, maxlength: 100 },
+  hero_desktop_img: { type: String, trim: true,  }, // File URL
+  hero_mobile_img: { type: String, trim: true,  }, // File URL
+  hero_short_desc: { type: String, trim: true, maxlength: 200 },
+  hero_desc: { type: String, trim: true, maxlength: 500 },
+  hero_message: { type: String, trim: true, maxlength: 255 },
+
+  // Ads Section
+  ad_title: { type: String, trim: true, maxlength: 100 },
+  ad_desc: { type: String, trim: true, maxlength: 500 },
+  ad_video: { type: String, trim: true, }, // Video URL
+
+  // Legacy Section
+  legacy_img: { type: String, trim: true, }, // Image URL
+  lagacy_title: { type: String, trim: true, maxlength: 100 },
+  legacy_desc_1: { type: String, trim: true, maxlength: 500 },
+  legacy_desc_2: { type: String, trim: true, maxlength: 500 },
+
+  // Curators Tales Section
+  curator_img: { type: String, trim: true, }, // Image URL
+  curator_title: { type: String, trim: true, maxlength: 100 },
+  curator_desc_1: { type: String, trim: true, maxlength: 500 },
+  curator_desc_2: { type: String, trim: true, maxlength: 500 },
+
+  // Promise Section
+  promise_title: { type: String, trim: true, maxlength: 100 },
+  promise_desc: { type: String, trim: true, maxlength: 500 },
+  promises_list: [
+    {
+      image: { type: String, trim: true,  },
+      description: { type: String, trim: true, maxlength: 255 },
+    },
+  ],
+
+  // Trending Section
+  trending_img: { type: String, trim: true, },
+  trending_title: { type: String, trim: true, maxlength: 200 },
+  trending_desc: { type: String, trim: true, maxlength: 500 },
+  trending_slug_name: { type: String, trim: true, maxlength: 200 },
+  trending_slug: { type: String, trim: true, },
   },
-  { timestamps: true } // Automatically add createdAt and updatedAt fields
+  { timestamps: true } 
 );
 
 module.exports = mongoose.model("LandingPage_eshop", LandingPageSchema);
