@@ -15,6 +15,8 @@ const storeKhwRouter = require("./routes/store-khw.routes.js");
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 const storeKhwRouter = require("./routes/store-khw.routes.js")
 const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
+const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
+
 
 const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
@@ -73,11 +75,11 @@ app.use('/store/khw', storeKhwRouter);
 
 
 // app.use("/admin/auth", adminAuthRouter);
-app.use("/api/testimonials", testimonialRoutes);
+
 
 // Customization
 app.use("/eshop/customization/",eshopCustomizationRoutes);
-app.use("/eshopBenefits", eshopBenefitsRoutes);
+app.use("/common/customization/", commonCustomizationRoutes);
 
 
 // Not Found Route & Error Middleware 

@@ -1,5 +1,5 @@
 const express = require("express");
-const PrivacyPolicy = require("../../models/eshop/privacyPolicy.js");
+const PrivacyPolicy = require("../models/eshop/privacyPolicy.js");
 
 // Get Privacy Policy
 const getPrivacyPolicy= async (req, res) => {
