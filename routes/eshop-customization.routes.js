@@ -8,6 +8,7 @@ const express = require("express");
 const { uploads, uploadSingle } = require("../services/S3_Services.js");
 const { createTestimonial, getTestimonials, updateTestimonial, deleteTestimonial } = require("../controllers/eshop/testimonial.controller.js");
 const { createBenefit, getBenefits, updateBenefit, deleteBenefit } = require("../controllers/eshop/eshopBenefits.controller.js");
+const { getPrivacyPolicy,updatePrivacyPolicy } = require("../controllers/eshop/privacyPolicy.controller.js");
 const router = express.Router();
 
 
@@ -53,5 +54,12 @@ router.put("/eshop-benefits/:id", uploads.single("image"), updateBenefit);
 
 router.get("/eshop-benefits", getBenefits);
 router.delete("/eshop-benefits/:id", deleteBenefit);
+
+// Privacy Policy 
+// Get Privacy Policy
+router.get("/privacy-policy",getPrivacyPolicy);
+
+// Update or Create Privacy Policy
+router.post("/privacy-policy",updatePrivacyPolicy);
 
 module.exports = router;
