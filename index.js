@@ -10,6 +10,9 @@ const adminAuthRouter = require("./routes/admin.auth.routes.js");
 const testimonialRoutes = require('./routes/testimonial.routes.js');
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
 const storeEshopRouter = require("./routes/store-eshop.routes.js")
+const storeKhwRouter = require("./routes/store-khw.routes.js");
+
+const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 const storeKhwRouter = require("./routes/store-khw.routes.js")
 const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
 
@@ -71,6 +74,9 @@ app.use('/store/khw', storeKhwRouter);
 
 // app.use("/admin/auth", adminAuthRouter);
 app.use("/api/testimonials", testimonialRoutes);
+
+// Customization
+app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/eshopBenefits", eshopBenefitsRoutes);
 
 
