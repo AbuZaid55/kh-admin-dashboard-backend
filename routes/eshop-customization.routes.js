@@ -8,6 +8,15 @@ const express = require("express");
 const { uploads, uploadSingle } = require("../services/S3_Services.js");
 const { createTestimonial, getTestimonials, updateTestimonial, deleteTestimonial } = require("../controllers/eshop/testimonial.controller.js");
 const { createBenefit, getBenefits, updateBenefit, deleteBenefit } = require("../controllers/eshop/eshopBenefits.controller.js");
+const {
+    getTerms,
+    createTerms,
+    updateTerms,
+    addTerm,
+    removeTerm,
+    addCondition,
+    removeCondition
+  } = require('../controllers/eshop/termAndCondition.controller.js');
 const { getPrivacyPolicy,updatePrivacyPolicy } = require("../controllers/eshop/privacyPolicy.controller.js");
 const router = express.Router();
 
@@ -61,5 +70,14 @@ router.get("/privacy-policy",getPrivacyPolicy);
 
 // Update or Create Privacy Policy
 router.post("/privacy-policy",updatePrivacyPolicy);
+
+// Term and conditions 
+router.route('/tnc/').get(getTerms).post(createTerms);
+router.route('/tnc/:id').put(updateTerms);
+router.route('/tnc/:id/term').post(addTerm);
+router.route('/tnc/:id/term/:termId').delete(removeTerm);
+router.route('/tnc/:id/term/:termId/condition').post(addCondition);
+router.route('/tnc/:id/term/:termId/condition/:conditionIndex').delete(removeCondition);
+
 
 module.exports = router;
