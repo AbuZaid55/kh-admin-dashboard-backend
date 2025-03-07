@@ -33,26 +33,32 @@ const addProduct = async (req, res) => {
 
 const getProducts = async (req, res) => {
   try {
-    const { _id, collection, category, style } = req.body;
+    const { _id, collection, category, style, page,limit } = req.body;
 
     let filter = {};
+    const skip = (page - 1) * limit; 
 
     if (_id) filter._id = _id;
     if (collection) filter.collection = collection;
     if (category) filter.category = category;
     if (style) filter.style = style;
 
-    const [uniqueCategories, uniqueStyles] = await Promise.all([
-      Product_khw.distinct("category", filter),
-      Product_khw.distinct("style", filter),
-    ]);
-
-    const categories = await Category_khw.find({ _id: { $in: uniqueCategories } }).select("name");
-    const styles = await Style_khw.find({ _id: { $in: uniqueStyles } }).select("name");
-
-    const data = await Product_khw.find(filter).sort({ createdAt: -1 });
-
-    res.status(200).json({ products: data, categories: categories, styles: styles });
+    if(limit && page){
+      const [uniqueCategories, uniqueStyles,totalRecords] = await Promise.all([
+        Product_khw.distinct("category", filter),
+        Product_khw.distinct("style", filter),
+        Product_khw.countDocuments(filter), 
+      ]);
+  
+      const categories = await Category_khw.find({ _id: { $in: uniqueCategories } }).select("name");
+      const styles = await Style_khw.find({ _id: { $in: uniqueStyles } }).select("name");
+  
+      const data = await Product_khw.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit);
+      res.status(200).json({ products: data, categories: categories, styles: styles, totalRecords });
+    }else{
+      const data = await Product_khw.find(filter).sort({ createdAt: -1 });
+      res.status(200).json({ products: data });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -70,6 +76,17 @@ const getProductById = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+const getProductByName = async(req,res)=>{
+  try {
+    const name = req?.params?.name 
+    const data = await Product_khw.findOne({name:name}).populate(["collection","category","style"])
+    if(!data) throw new Error("Product Not found")
+    res.status(200).json(data)
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
 
 const getProductForUpdate = async (req, res) => {
   try {
@@ -139,4 +156,4 @@ const deleteProduct = async (req, res) => {
 }
 
 
-module.exports = { addProduct, getProducts, getProductById,getProductForUpdate, updateProduct, deleteProduct };
+module.exports = { addProduct, getProducts, getProductById,getProductByName,getProductForUpdate, updateProduct, deleteProduct };

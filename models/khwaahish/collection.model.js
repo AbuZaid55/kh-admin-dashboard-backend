@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const collectionSchema_khw = new mongoose.Schema({
-    name:{type:String,required:true},
+    name:{type:String,unique:true,required:true},
     tagline:{type:String},
     description:{type:String},
     image:{key:String,url:String},
