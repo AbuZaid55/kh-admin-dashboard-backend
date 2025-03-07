@@ -11,6 +11,7 @@ const {
     removeCondition
   } = require('../controllers/termAndCondition.controller.js');
 const { getPrivacyPolicy,updatePrivacyPolicy } = require("../controllers/privacyPolicy.controller.js");
+const {getFooters,createFooter,getFooter,deleteFooter,getFooterByDomain,updateFooter} = require("../controllers/footer.controller.js")
 const express=require("express");
 const router=express.Router();
 
