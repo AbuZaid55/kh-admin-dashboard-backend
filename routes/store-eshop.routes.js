@@ -1,6 +1,6 @@
 const express = require("express")
 
-const { uploadFilesOnS3 } = require("../services/S3_Services")
+const { uploadFilesOnS3 } = require("../services/S3_Services");
 
 const { addCollection, getAllCollections, updateCollection, deleteCollection } = require("../controllers/eshop/collections.controller")
 const { addCategory, getAllCategories, getStyles, updateCategory, deleteCategory } = require("../controllers/eshop/category.controller")
@@ -14,6 +14,7 @@ const { addLabor, getLabors, updateLabor, deleteLabor } = require("../controller
 const {addMakingCharge,getMakingCharges, updateMakingCharge, deleteMakingCharge} = require("../controllers/eshop/making_charge.controller")
 const {addWastageCharge,getWastageCharge, updateWastageCharge, deleteWastageCharge} = require("../controllers/eshop/wastage_charge.controller")
 const { addRecommended, getRecommended, updateRecommended, deleteRecommended } = require("../controllers/eshop/recommended.controller")
+
 
 const router = express.Router()
 
