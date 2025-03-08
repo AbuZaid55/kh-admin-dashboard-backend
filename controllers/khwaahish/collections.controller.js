@@ -7,11 +7,11 @@ const addCollection = async(req,res)=>{
     const image = req?.imageUrl
     const nav_image = req?.navImageUrl
     try {
-        const {name,tagline,description,showInNav} = req.body
+        const {name,tagline,description,showInNav,showInCollection,hasHomePage,pathOfHomePage} = req.body
         if(!name) throw new Error("Enter Collection Name")
         const isExist = await Collection_khw.findOne({name:name})
         if(isExist) throw new Error("Collection Already Exist!")
-        const newCollection = new Collection_khw({name,tagline,description,image,nav_image,showInNav}) 
+        const newCollection = new Collection_khw({name,tagline,description,image,nav_image,showInNav,showInCollection,hasHomePage,pathOfHomePage}) 
         await newCollection.save()
         res.status(200).json({message:"Added successfully"})
     } catch (error) {
@@ -39,7 +39,7 @@ const updateCollection = async(req,res)=>{
     const nav_image = req?.navImageUrl
     try {
         const _id = req.params?.id;
-        const {name,tagline,description,showInNav} = req.body 
+        const {name,tagline,description,showInNav,showInCollection,hasHomePage,pathOfHomePage} = req.body 
         if(!name) throw new Error("Enter Collection Name")
         const data = await Collection_khw.findById(_id)
         if(!data) throw new Error("Collection not exist")
@@ -55,6 +55,9 @@ const updateCollection = async(req,res)=>{
         data.tagline = tagline
         data.description = description
         data.showInNav = showInNav
+        data.showInCollection = showInCollection
+        data.hasHomePage = hasHomePage
+        data.pathOfHomePage = pathOfHomePage
         await data.save()
         res.status(200).json({message:"Updated Successfully"})
     } catch (error) {
