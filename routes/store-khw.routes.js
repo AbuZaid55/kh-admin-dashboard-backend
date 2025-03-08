@@ -2,7 +2,7 @@ const express = require("express")
 
 const { uploadFilesOnS3 } = require("../services/S3_Services")
 
-const { addCollection, getAllCollections, updateCollection, deleteCollection } = require("../controllers/khwaahish/collections.controller")
+const { addCollection, getAllCollections, updateCollection, deleteCollection, getCollectionByName } = require("../controllers/khwaahish/collections.controller")
 const { addCategory, getAllCategories, updateCategory, deleteCategory, getCategoryByName } = require("../controllers/khwaahish/category.controller")
 const { addStyle, getAllStyles, updateStyle, deleteStyle } = require("../controllers/khwaahish/styles.controller")
 const { addProduct, getProducts, getProductById, updateProduct, deleteProduct, getProductForUpdate, getProductByName } = require("../controllers/khwaahish/product.controller")
@@ -11,6 +11,7 @@ const router = express.Router()
 
 router.post("/collections/add-collection",uploadFilesOnS3,addCollection) 
 router.get("/collections/get-all-collections",getAllCollections)
+router.get("/collections/get-collection-by-name/:name",getCollectionByName)
 router.put("/collections/update-collection/:id",uploadFilesOnS3,updateCollection)
 router.delete("/collections/delete-collection/:id",deleteCollection)
 

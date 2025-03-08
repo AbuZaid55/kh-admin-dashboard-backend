@@ -80,7 +80,7 @@ const getProductById = async (req, res) => {
 const getProductByName = async(req,res)=>{
   try {
     const name = req?.params?.name 
-    const data = await Product_khw.findOne({name:name}).populate(["collection","category","style"])
+    const data = await Product_khw.findOne({name:{ $regex: new RegExp(`^${name}$`, "i") }}).populate(["collection","category","style"])
     if(!data) throw new Error("Product Not found")
     res.status(200).json(data)
   } catch (error) {

@@ -34,6 +34,16 @@ const getAllCollections = async(req,res)=>{
     }
 }
 
+const getCollectionByName = async(req,res)=>{
+    try {
+        const name = req?.params?.name 
+        const data = await Collection_khw.findOne({name:{ $regex: new RegExp(`^${name}$`, "i") }})
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(400).json({error:error.message})
+    }
+}
+
 const updateCollection = async(req,res)=>{
     const image = req?.imageUrl
     const nav_image = req?.navImageUrl
@@ -90,4 +100,4 @@ const deleteCollection = async(req,res)=>{
     }
 }
 
-module.exports = {addCollection,getAllCollections,updateCollection,deleteCollection}
+module.exports = {addCollection,getAllCollections,getCollectionByName,updateCollection,deleteCollection}
