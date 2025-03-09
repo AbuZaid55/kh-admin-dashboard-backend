@@ -64,7 +64,3 @@ router.post("/collectio-homepage/topics", collectionHomepageController.addTopics
 router.delete("/collectio-homepage/topics", collectionHomepageController.deleteTopics);
 
 module.exports = router;
-
-
-
-module.exports = router;
