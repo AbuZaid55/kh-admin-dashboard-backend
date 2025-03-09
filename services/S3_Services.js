@@ -3,7 +3,7 @@ const multer = require("multer");
 const multerS3 = require("multer-s3");
 const s3 = require("../config/S3");
 
-const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || '';
 
 const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif"];
 
