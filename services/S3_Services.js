@@ -104,5 +104,4 @@ const deleteFileFromS3 = async (fileKey) => {
   await s3.send(new DeleteObjectCommand(params));
 };
 
-module.exports = { uploadSingle, uploadFilesOnS3, deleteFileFromS3 };
-module.exports = { uploadFilesOnS3, deleteFileFromS3 ,deleteFileByLocationFromS3,uploads};
+module.exports = { uploadSingle,uploadFilesOnS3, deleteFileFromS3 ,deleteFileByLocationFromS3,uploads};
