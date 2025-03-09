@@ -9,17 +9,14 @@ const userRouter=require("./routes/user.auth.routes.js");
 const adminAuthRouter = require("./routes/admin.auth.routes.js");
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
 const storeEshopRouter = require("./routes/store-eshop.routes.js")
-const storeKhwRouter = require("./routes/store-khw.routes.js");
 
-const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
 const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
 const storeKhwRouter = require("./routes/store-khw.routes.js");
 
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
-const storeKhwRouter = require("./routes/store-khw.routes.js")
-const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
+
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
 const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
@@ -87,11 +84,11 @@ app.use('/store/khw', storeKhwRouter);
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
 // app.use("/admin/auth", adminAuthRouter);
-app.use("/api/testimonials", testimonialRoutes);
+// app.use("/api/testimonials", testimonialRoutes);
 
 // Customization
 app.use("/eshop/customization/",eshopCustomizationRoutes);
-app.use("/eshopBenefits", eshopBenefitsRoutes);
+// app.use("/eshopBenefits", eshopBenefitsRoutes);
 
 // QOH Homepage Customization Routes
 app.use("/api/v1/qoh-homepage/customization", qoh_HomepageCustomizationRouter);
