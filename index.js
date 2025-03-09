@@ -20,6 +20,9 @@ const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js")
 const storeKhwRouter = require("./routes/store-khw.routes.js")
 const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
 
+const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
+const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
+
 const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
@@ -88,6 +91,12 @@ app.use("/api/testimonials", testimonialRoutes);
 // Customization
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/eshopBenefits", eshopBenefitsRoutes);
+
+// QOH Homepage Customization Routes
+app.use("/api/v1/qoh-homepage/customization", qoh_HomepageCustomizationRouter);
+
+// Collection Homepage Customization Routes
+app.use("/api/v1/collection-homepage/customization", collectionHomepageCustomizationRouter);
 
 
 // Not Found Route & Error Middleware 
