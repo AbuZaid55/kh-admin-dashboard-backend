@@ -189,10 +189,12 @@ exports.updateCategorySection = async (req, res) => {
     }
 };
 
+
 exports.updateTopicSection = async (req, res) => {
     try {
         
         const { collection_homepage_name, topic_section_title } = req.body;
+        
         if (!allowedCollectionHomepage.includes(collection_homepage_name)) {
             return res.status(400).json({ success: false, message: "Invalid collection homepage name" });
         }
@@ -206,23 +208,32 @@ exports.updateTopicSection = async (req, res) => {
         let updateData = {};
         if (topic_section_title !== undefined) updateData.topic_section_title = topic_section_title;
 
+        
+        
         const updated = await CollectionAd.findOneAndUpdate(
             { collection_homepage_name },
             updateData,
             { new: true, upsert: true }
         );
-
-        res.json({ success: true, data: updated });
+        
+        res.status(200).json({ success: true, data: updated });
     } catch (error) {
         console.error("Error updating topic section:", error);
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
 
-exports.addTopics = async (req, res) => {
+
+// updated
+exports.addTopic = async (req, res) => {
     try {
         
-        const { collection_homepage_name, topics } = req.body;
+        const { collection_homepage_name, topicTitle, topicDesc } = req.body;
+        topic={};
+        if (!collection_homepage_name || !topicTitle || !topicDesc) {
+            return res.status(400).json({ success: false, message: "All fields are required" });
+        }
+    
         if (!allowedCollectionHomepage.includes(collection_homepage_name)) {
             return res.status(400).json({ success: false, message: "Invalid collection homepage name" });
         }
@@ -233,11 +244,13 @@ exports.addTopics = async (req, res) => {
             await collectionAd.save();
         }
 
-        if (!Array.isArray(topics)) {
-            return res.status(400).json({ success: false, message: "Topics should be an array" });
-        }
+        topic.topicTitle=topicTitle;
+        topic.topicDesc=topicDesc;
 
-        collectionAd.topics = collectionAd.topics.concat(topics);
+        if (req.files && req.files['topicImages']) {
+            topic.topicImages = req.files['topicImages'].map(file => file.location.replace(/\\/g, '/'));
+        }
+        collectionAd.topics = collectionAd.topics.concat(topic);
         await collectionAd.save();
 
         res.json({ success: true, data: collectionAd });
@@ -246,11 +259,10 @@ exports.addTopics = async (req, res) => {
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
-
-exports.deleteTopics = async (req, res) => {
+exports.deleteTopic = async (req, res) => {
     try {
         
-        const { collection_homepage_name, topicIds } = req.body;
+        const { collection_homepage_name ,id } = req.query;
         if (!allowedCollectionHomepage.includes(collection_homepage_name)) {
             return res.status(400).json({ success: false, message: "Invalid collection homepage name" });
         }
@@ -261,11 +273,14 @@ exports.deleteTopics = async (req, res) => {
             await collectionAd.save();
         }
 
-        if (!Array.isArray(topicIds)) {
-            return res.status(400).json({ success: false, message: "Topic IDs should be an array" });
+        const topicToDelete = collectionAd.topics.find(topic => topic._id.toString() === id);
+        if (topicToDelete && topicToDelete.topicImages) {
+            topicToDelete.topicImages.forEach(imagePath => {
+                deleteFileByLocationFromS3(imagePath);
+            });
         }
 
-        collectionAd.topics = collectionAd.topics.filter(topic => !topicIds.includes(topic._id.toString()));
+        collectionAd.topics = collectionAd.topics.filter(topic => topic._id.toString() !== id);
         await collectionAd.save();
 
         res.json({ success: true, data: collectionAd });
@@ -274,6 +289,8 @@ exports.deleteTopics = async (req, res) => {
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
+
+
 
 exports.updateCuratorThought = async (req, res) => {
     try {
@@ -313,6 +330,7 @@ exports.updateCuratorThought = async (req, res) => {
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
+
 
 exports.toggleSection = async (req, res) => {
     try {
@@ -357,7 +375,7 @@ exports.toggleSection = async (req, res) => {
         res.status(200).json({
             success: true,
             message: `Section ${section} visibility updated successfully`,
-            value: updated[section]
+            value: updated
         });
     } catch (error) {
         console.error("Error toggling section visibility:", error);

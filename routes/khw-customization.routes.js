@@ -59,8 +59,11 @@ router.put("/collectio-homepage/toggle-section", collectionHomepageController.to
 
 router.put("/collectio-homepage/collection", uploads.single("collection_data_image"), collectionHomepageController.updateCollection);
 
-router.post("/collectio-homepage/topics", collectionHomepageController.addTopics);
+// updated
+router.put("/topic", collectionHomepageController.updateTopicSection);
 
-router.delete("/collectio-homepage/topics", collectionHomepageController.deleteTopics);
+router.post("/topic",uploads.fields([{ name: "topicImages" }]), collectionHomepageController.addTopic);
+
+router.delete("/topic", collectionHomepageController.deleteTopic);
 
 module.exports = router;

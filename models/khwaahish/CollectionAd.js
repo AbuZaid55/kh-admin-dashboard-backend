@@ -37,7 +37,7 @@ const CollectionAdSchema = new mongoose.Schema(
 
   // topics 
   topic_section:{type:Boolean,default:true},
-  topi_section_title:{ type: String,},
+  topic_section_title:{ type: String,},
   topics:[
     {
         topicTitle:{ type: String,},
