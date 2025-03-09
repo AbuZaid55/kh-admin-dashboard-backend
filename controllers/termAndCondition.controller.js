@@ -1,4 +1,4 @@
-const TermsAndConditions = require('../models/eshop/termAndCondition.js');
+const TermsAndConditions = require('../models/termAndCondition.js');
 
 // Get the latest terms and conditions
 const getTerms = async (req, res) => {

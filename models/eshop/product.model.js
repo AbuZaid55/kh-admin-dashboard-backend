@@ -58,7 +58,7 @@ const ProductSchema_eshop = new mongoose.Schema(
     width: { type: String },
 
     // Recommended For
-    recommendedFor: [{ type: String }],
+    recommendedFor: [ { type: mongoose.Schema.Types.ObjectId, ref: "recommeded_eshop" }],
   },
   { timestamps: true }
 );

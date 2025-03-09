@@ -67,6 +67,17 @@ const updateCategory = async (req, res) => {
   }
 }
 
+const getCategoryByName = async(req,res)=>{
+  try {
+    const name = req?.params?.name;
+    if(!name) throw new Error("Name not found")
+    const data = await Category_khw.findOne({name:{ $regex: new RegExp(`^${name}$`, "i") }})
+    res.status(200).json(data)
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 const deleteCategory = async (req, res) => {
   try {
     const id = req?.params?.id;
@@ -86,4 +97,4 @@ const deleteCategory = async (req, res) => {
   }
 }
 
-module.exports = { addCategory, getAllCategories, updateCategory, deleteCategory };
+module.exports = { addCategory, getAllCategories, updateCategory,getCategoryByName, deleteCategory };

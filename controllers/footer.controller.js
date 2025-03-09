@@ -1,5 +1,5 @@
 // controllers/footerController.js
-const Footer = require('../models/eshop/footer.model.js');
+const Footer = require('../models/footer.model.js');
 const { deleteFileByLocationFromS3 } = require('../services/S3_Services');
 
 // @desc    Get all footers
