@@ -107,7 +107,7 @@ const getProductById = async (req, res) => {
   try {
     const _id = req.params?.id;
     if (!_id) throw new Error("Product Id not found!");
-    const data = await Product_eshop.findById(_id).populate(["collection", "category", "style", "color1", "color2", "color3", "diamond_discount", "gold_discount", "discount_on_total", "labor", "golds", "diamonds.diamond", {
+    const data = await Product_eshop.findById(_id).populate(["collection", "category", "style", "recommendedFor", "color1", "color2", "color3", "diamond_discount", "gold_discount", "discount_on_total", "labor", "golds", "diamonds.diamond", {
       path: "golds",
       populate: [
         { path: "making_charge" },

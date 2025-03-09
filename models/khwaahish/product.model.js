@@ -3,7 +3,7 @@ const { deleteFileFromS3 } = require("../../services/S3_Services");
 
 const ProductSchema_khw = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String,unique:true, required: true },
     sku: { type: String, unique: true, required: true },
     description: { type: String },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category_khw", required: true },

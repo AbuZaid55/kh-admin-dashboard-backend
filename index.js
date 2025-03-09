@@ -7,9 +7,13 @@ const { dbConnect } = require("./config/dbConnect");
 const userProfileRouter=require("./routes/user.profile.routes.js");
 const userRouter=require("./routes/user.auth.routes.js");
 const adminAuthRouter = require("./routes/admin.auth.routes.js");
-const testimonialRoutes = require('./routes/testimonial.routes.js');
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
 const storeEshopRouter = require("./routes/store-eshop.routes.js")
+const storeKhwRouter = require("./routes/store-khw.routes.js");
+
+const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
+const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
+
 const storeKhwRouter = require("./routes/store-khw.routes.js");
 
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
@@ -72,6 +76,12 @@ app.use('/store/eshop', storeEshopRouter);
 app.use('/store/khw', storeKhwRouter);
 
 
+// app.use("/admin/auth", adminAuthRouter);
+
+
+// Customization
+app.use("/eshop/customization/",eshopCustomizationRoutes);
+app.use("/common/customization/", commonCustomizationRoutes);
 // app.use("/admin/auth", adminAuthRouter);
 app.use("/api/testimonials", testimonialRoutes);
 
