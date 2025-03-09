@@ -7,6 +7,7 @@ const {
   updateComingSoon, updateStoreSection, addStoreFeat, deleteStoreFeat, faqSection,
   addFaq, deleteFaq, toggleSection
 } = require("../controllers/khwaahish/homepage.controller.js");
+const collectionHomepageController= require("../controllers/khwaahish/collectionHomepage.controller.js");
 const { uploads } = require('../services/S3_Services.js');
 
 // KHWAAHISH HOMEPAGE 
@@ -41,6 +42,28 @@ router.post("/faq", addFaq);
 router.delete("/faq/:id", deleteFaq);
 
 router.put("/toggle-section", toggleSection);
+
+
+// CollectionAd routes
+router.get("/collectio-homepage", collectionHomepageController.getCollectionAd);
+
+router.put("/collectio-homepage/general", uploads.fields([{ name: "hero_desktop_banner_img" }, { name: "hero_mobile_banner_img" }, { name: "collection_logo" }, { name: "ad_video" }]), collectionHomepageController.updateGeneral);
+
+router.put("/collectio-homepage/jewel-at-glance", uploads.fields([{ name: "jewel_at_glance_images" }]), collectionHomepageController.updateJewelAtGlance);
+
+router.put("/collectio-homepage/category-section", uploads.fields([{ name: "category_section_images" }]), collectionHomepageController.updateCategorySection);
+
+router.put("/collectio-homepage/curator-thought", uploads.single("curator_profileImg"), collectionHomepageController.updateCuratorThought);
+
+router.put("/collectio-homepage/toggle-section", collectionHomepageController.toggleSection);
+
+router.put("/collectio-homepage/collection", uploads.single("collection_data_image"), collectionHomepageController.updateCollection);
+
+router.post("/collectio-homepage/topics", collectionHomepageController.addTopics);
+
+router.delete("/collectio-homepage/topics", collectionHomepageController.deleteTopics);
+
+module.exports = router;
 
 
 
