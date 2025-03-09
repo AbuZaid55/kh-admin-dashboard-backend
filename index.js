@@ -13,6 +13,7 @@ const storeKhwRouter = require("./routes/store-khw.routes.js");
 
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
+const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
 
 const errorMiddleware = require("./middlewares/error.js");
@@ -78,6 +79,8 @@ app.use('/store/khw', storeKhwRouter);
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
 
+// Customization khwaahish 
+app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);
 
 // Not Found Route & Error Middleware 
 app.use("*",(req, res, next) => {
