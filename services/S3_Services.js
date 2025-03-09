@@ -97,6 +97,7 @@ const deleteFileByLocationFromS3 = async (fileUrl) => {
 
 
 const deleteFileFromS3 = async (fileKey) => {
+  if(!fileKey) return;
   const params = {
     Bucket: AWS_S3_BUCKET_NAME,
     Key: fileKey,

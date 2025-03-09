@@ -2,6 +2,8 @@ const express = require("express")
 
 const { uploadFilesOnS3 } = require("../services/S3_Services");
 
+const upload = require("../middlewares/multerMiddleware");
+
 const { addCollection, getAllCollections, updateCollection, deleteCollection } = require("../controllers/eshop/collections.controller")
 const { addCategory, getAllCategories, getStyles, updateCategory, deleteCategory } = require("../controllers/eshop/category.controller")
 const { addStyle, getAllStyles, updateStyle, deleteStyle } = require("../controllers/eshop/style.controller")
@@ -13,7 +15,8 @@ const { addDiamond, getDiamonds, updateDiamond, deleteDiamond } = require("../co
 const { addLabor, getLabors, updateLabor, deleteLabor } = require("../controllers/eshop/labor.controller")
 const {addMakingCharge,getMakingCharges, updateMakingCharge, deleteMakingCharge} = require("../controllers/eshop/making_charge.controller")
 const {addWastageCharge,getWastageCharge, updateWastageCharge, deleteWastageCharge} = require("../controllers/eshop/wastage_charge.controller")
-const { addRecommended, getRecommended, updateRecommended, deleteRecommended } = require("../controllers/eshop/recommended.controller")
+const { addRecommended, getRecommended, updateRecommended, deleteRecommended } = require("../controllers/eshop/recommended.controller");
+const { bulkUploadXlsx } = require("../controllers/eshop/bulkupload.controller");
 
 
 
@@ -69,6 +72,8 @@ router.post("/discounts/apply-discount",applyDiscount)
 router.get("/discounts/get-all-discounts",getAllDiscounts)
 router.put("/discounts/update-discount/:id",updateDiscount)
 router.delete("/discounts/delete-discount/:id",deleteDiscount)
+
+router.post("/products/bulk-upload", upload.single("file"), bulkUploadXlsx);
 
 router.post("/products/add-product",uploadFilesOnS3,addProduct)
 router.post("/products/get-products",getProducts)

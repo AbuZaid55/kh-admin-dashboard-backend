@@ -76,8 +76,8 @@ const deleteCategory = async(req,res)=>{
     if(category.image?.key){
       deleteFileFromS3(category.image?.key)
     }
-    await Category_eshop.deleteOne({_id:category._id})
     await Products_eshop.deleteMany({category:id})
+    await Category_eshop.deleteOne({_id:category._id})
     res.status(200).json({message:"Deleted Successfully"})
   } catch (error) {
     res.status(400).json({ error: error.message });

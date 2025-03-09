@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const goldSchema_eshop = new mongoose.Schema({
-  carat: { type: String, required: true, unique: true }, 
+  carat: { type: String, required: true, unique: true,trim:true }, 
   pricePerGram: { type: Number, required: true }, 
   making_charge: { type: mongoose.Schema.Types.ObjectId, ref: "making_charge_eshop" },
   wastage_charge: { type: mongoose.Schema.Types.ObjectId, ref: "wastage_charge_eshop" },
