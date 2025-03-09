@@ -135,5 +135,63 @@ const getLandingpage=async(req,res)=>{
     }
 }
 
+const toggleSection = async (req, res) => {
+    try {
+      const { section, value } = req.body;
+      
+      
+      if (section === undefined || value === undefined) {
+        return res.status(400).json({ success: false, message: "Section name and value are required" });
+      }
+      
+      
+      // List of valid section fields
+      const validSections = [
+        "general_section",
+        "hero_section",
+        // Ads Section
+        "ads_section",
+        // Legacy Section
+        "legacy_section",
+        // Curators Tales Section
+        "curator_section",
+        // Promise Section
+        "promise_section",
+        // Trending Section
+        "trending_section",
+      
+      ];
+      
+      if (!validSections.includes(section)) {
+        return res.status(400).json({ success: false, message: "Invalid section name" });
+      }
+      
+      let landingPage = await LandingPage.findOne({ eshop_name:"Gulz" });
+      if (!landingPage) {
+        landingPage = new LandingPage({eshop_name:"Gulz"});
+        await landingPage.save();
+      }
+  
+      // Create update object
+      const updateData = {};
+      updateData[section] = value === true || value === 'true';
+  
+      const updated = await LandingPage.findOneAndUpdate(
+        { eshop_name:"Gulz" },
+        updateData,
+        { new: true }
+      );
+  
+      res.status(200).json({ 
+        success: true, 
+        message: `Section ${section} visibility updated successfully`,
+        value: updated[section]
+      });
+    } catch (error) {
+      console.error("Error toggling section visibility:", error);
+      res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
 
-module.exports = {landingPageUpdate,getLandingpage,addPromise,deletePromise}
+
+module.exports = {landingPageUpdate,getLandingpage,addPromise,deletePromise,toggleSection}
