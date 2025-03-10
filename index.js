@@ -4,14 +4,14 @@ const cors = require("cors")
 const { apiKeyMiddleware } = require("./middlewares/apiKey");
 const { dbConnect } = require("./config/dbConnect");
 
-const userProfileRouter=require("./routes/user.profile.routes.js");
-const userRouter=require("./routes/user.auth.routes.js");
-const adminAuthRouter = require("./routes/admin.auth.routes.js");
-const pressReleaseRoutes = require('./routes/pressRelease.routes');
-const storeEshopRouter = require("./routes/store-eshop.routes.js")
-const storeKhwRouter = require("./routes/store-khw.routes.js");
+// const userProfileRouter=require("./routes/user.profile.routes.js");
+// const userRouter=require("./routes/user.auth.routes.js");
+// const adminAuthRouter = require("./routes/admin.auth.routes.js");
+// const pressReleaseRoutes = require('./routes/pressRelease.routes');
+// const storeEshopRouter = require("./routes/store-eshop.routes.js")
+// const storeKhwRouter = require("./routes/store-khw.routes.js");
 
-const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
+// const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
 const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
@@ -20,10 +20,11 @@ const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const User = require("./models/user.model");
+const path=require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ALLOWED_ORIGINS = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : [];
+// const ALLOWED_ORIGINS = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : [];
 
 // database and redis
 dbConnect().then().catch(err=>console.log(err));
@@ -32,6 +33,8 @@ dbConnect().then().catch(err=>console.log(err));
 // app.use(apiKeyMiddleware);
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
 
 // database
 dbConnect().then().catch(err=>console.log(err));
@@ -65,18 +68,18 @@ app.use(cors({
 app.get("/test",(req,res)=>{
     res.status(200).json({message:"Success"})
 })
-app.use("/user/auth",userRouter);
-app.use("/user/profile/",userProfileRouter);
-app.use('/api/press-releases', pressReleaseRoutes);
-app.use('/store/eshop', storeEshopRouter);
-app.use('/store/khw', storeKhwRouter);
+// app.use("/user/auth",userRouter);
+// app.use("/user/profile/",userProfileRouter);
+// app.use('/api/press-releases', pressReleaseRoutes);
+// app.use('/store/eshop', storeEshopRouter);
+// app.use('/store/khw', storeKhwRouter);
 
 
 // app.use("/admin/auth", adminAuthRouter);
 
 
 // Customization
-app.use("/eshop/customization/",eshopCustomizationRoutes);
+// app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
 
 // Customization khwaahish 

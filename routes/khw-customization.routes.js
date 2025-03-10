@@ -8,7 +8,37 @@ const {
   addFaq, deleteFaq, toggleSection
 } = require("../controllers/khwaahish/homepage.controller.js");
 const collectionHomepageController= require("../controllers/khwaahish/collectionHomepage.controller.js");
-const { uploads } = require('../services/S3_Services.js');
+// const { uploads } = require('../services/S3_Services.js');
+
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Multer storage config
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/khwaahish/"),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+});
+
+// File filter function
+const fileFilter = (req, file, cb) => {
+  // Accept images and videos only
+  if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image and video files are allowed!'), false);
+  }
+};
+
+const uploads = multer({ 
+  storage: storage, 
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB limit
+  }
+});
+
+
 
 // KHWAAHISH HOMEPAGE 
 router.get("/", getHomepage);

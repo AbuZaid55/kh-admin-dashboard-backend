@@ -75,11 +75,15 @@ const uploadFilesOnS3 = async (req, res, next) => {
 // add this in services 
 const deleteFileByLocationFromS3 = async (fileUrl) => {
     try {
-      // Extract fileKey from fileUrl
-      const fileKey = fileUrl.split(`${AWS_S3_BUCKET_NAME}/`)[1]; 
+      if (!fileUrl.startsWith("https://")) {
+        throw new Error("Invalid S3 file URL");
+      }
+  
+      // Extract file key from URL
+      const fileKey = new URL(fileUrl).pathname.substring(1); // Remove leading "/"
   
       if (!fileKey) {
-        throw new Error("Invalid S3 file URL");
+        throw new Error("Invalid S3 file key extracted");
       }
   
       const params = {

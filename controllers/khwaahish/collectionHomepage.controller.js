@@ -1,13 +1,27 @@
 const CollectionAd = require("../../models/khwaahish/CollectionAd.js");
-const { deleteFileByLocationFromS3 } = require("../../services/S3_Services.js");
+// const { deleteFileByLocationFromS3 } = require("../../services/S3_Services.js");
 
 const allowedCollectionHomepage = ["Asai","Noor", "Bridal Edit", "Polki Edit","Pache"];
+
+
+// Helper function to delete file from local storage
+const deleteLocalFile = (filePath) => {
+    try {
+      if (!filePath) return;
+      const fullPath = path.join(__dirname, "../../", filePath);
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath);
+        console.log(`File deleted: ${fullPath}`);
+      }
+    } catch (error) {
+      console.error("Error deleting file:", error);
+    }
+  };
 
 // Main CollectionAd CRUD operations
 exports.getCollectionAd = async (req, res) => {
     try {
-        
-        const { collection_homepage_name } = req.query;
+         const { collection_homepage_name } = req.query;
 
         if (!allowedCollectionHomepage.includes(collection_homepage_name)) {
             return res.status(400).json({ success: false, message: "Invalid collection homepage name" });
@@ -49,9 +63,11 @@ exports.updateGeneral = async (req, res) => {
         for (const field of fileFields) {
             if (req.files && req.files[field]) {
                 if (collectionAd[field]) {
-                    deleteFileByLocationFromS3(collectionAd[field]);
+                    // deleteFileByLocationFromS3(collectionAd[field]);
+                    deleteLocalFile(collectionAd[field]);
                 }
-                updateData[field] = req.files[field][0].location.replace(/\\/g, '/');
+                // updateData[field] = req.files[field][0].location.replace(/\\/g, '/');
+                updateData[field] = req.files[field][0].path.replace(/\\/g, '/');
             }
         }
 
@@ -90,9 +106,11 @@ exports.updateCollection = async (req, res) => {
 
         if (req.files && req.files['collection_data_image']) {
             if (collectionAd.collection_data_image) {
-                deleteFileByLocationFromS3(collectionAd.collection_data_image);
+                // deleteFileByLocationFromS3(collectionAd.collection_data_image);
+                deleteLocalFile(collectionAd.collection_data_image);
             }
-            updateData['collection_data_image'] = req.files['collection_data_image'][0].location.replace(/\\/g, '/');
+            // updateData['collection_data_image'] = req.files['collection_data_image'][0].location.replace(/\\/g, '/');
+            updateData['collection_data_image'] = req.files['collection_data_image'][0].path.replace(/\\/g, '/');
         }
 
         const updated = await CollectionAd.findOneAndUpdate(
@@ -130,10 +148,12 @@ exports.updateJewelAtGlance = async (req, res) => {
         if (req.files && req.files['jewel_at_glance_images']) {
             if (collectionAd.jewel_at_glance_images && collectionAd.jewel_at_glance_images.length > 0) {
                 collectionAd.jewel_at_glance_images.forEach(imagePath => {
-                    deleteFileByLocationFromS3(imagePath);
+                    // deleteFileByLocationFromS3(imagePath);
+                    deleteLocalFile(imagePath);
                 });
             }
-            updateData['jewel_at_glance_images'] = req.files['jewel_at_glance_images'].map(file => file.location.replace(/\\/g, '/'));
+            // updateData['jewel_at_glance_images'] = req.files['jewel_at_glance_images'].map(file => file.location.replace(/\\/g, '/'));
+            updateData['jewel_at_glance_images'] = req.files['jewel_at_glance_images'].map(file => file.path.replace(/\\/g, '/'));
         }
 
         const updated = await CollectionAd.findOneAndUpdate(
@@ -170,10 +190,12 @@ exports.updateCategorySection = async (req, res) => {
         if (req.files && req.files['category_section_images']) {
             if (collectionAd.category_section_images && collectionAd.category_section_images.length > 0) {
                 collectionAd.category_section_images.forEach(imagePath => {
-                    deleteFileByLocationFromS3(imagePath);
+                    // deleteFileByLocationFromS3(imagePath);
+                    deleteLocalFile(imagePath);
                 });
             }
-            updateData['category_section_images'] = req.files['category_section_images'].map(file => file.location.replace(/\\/g, '/'));
+            updateData['category_section_images'] = req.files['category_section_images'].map(file => file.path.replace(/\\/g, '/'));
+            // updateData['category_section_images'] = req.files['category_section_images'].map(file => file.location.replace(/\\/g, '/'));
         }
 
         const updated = await CollectionAd.findOneAndUpdate(
@@ -248,7 +270,8 @@ exports.addTopic = async (req, res) => {
         topic.topicDesc=topicDesc;
 
         if (req.files && req.files['topicImages']) {
-            topic.topicImages = req.files['topicImages'].map(file => file.location.replace(/\\/g, '/'));
+            // topic.topicImages = req.files['topicImages'].map(file => file.location.replace(/\\/g, '/'));
+            topic.topicImages = req.files['topicImages'].map(file => file.path.replace(/\\/g, '/'));
         }
         collectionAd.topics = collectionAd.topics.concat(topic);
         await collectionAd.save();
@@ -276,7 +299,8 @@ exports.deleteTopic = async (req, res) => {
         const topicToDelete = collectionAd.topics.find(topic => topic._id.toString() === id);
         if (topicToDelete && topicToDelete.topicImages) {
             topicToDelete.topicImages.forEach(imagePath => {
-                deleteFileByLocationFromS3(imagePath);
+                // deleteFileByLocationFromS3(imagePath);
+                deleteLocalFile(imagePath);
             });
         }
 
@@ -313,9 +337,11 @@ exports.updateCuratorThought = async (req, res) => {
 
         if (req.files && req.files['curator_profileImg']) {
             if (collectionAd.curator_profileImg) {
-                deleteFileByLocationFromS3(collectionAd.curator_profileImg);
+                // deleteFileByLocationFromS3(collectionAd.curator_profileImg);
+                deleteLocalFile(collectionAd.curator_profileImg);
             }
-            updateData['curator_profileImg'] = req.files['curator_profileImg'][0].location.replace(/\\/g, '/');
+            // updateData['curator_profileImg'] = req.files['curator_profileImg'][0].location.replace(/\\/g, '/');
+            updateData['curator_profileImg'] = req.files['curator_profileImg'][0].path.replace(/\\/g, '/');
         }
 
         const updated = await CollectionAd.findOneAndUpdate(
@@ -375,7 +401,7 @@ exports.toggleSection = async (req, res) => {
         res.status(200).json({
             success: true,
             message: `Section ${section} visibility updated successfully`,
-            value: updated
+            data: updated
         });
     } catch (error) {
         console.error("Error toggling section visibility:", error);
