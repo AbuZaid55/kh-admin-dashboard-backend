@@ -5,7 +5,7 @@ const { uploadFilesOnS3 } = require("../services/S3_Services");
 const upload = require("../middlewares/multerMiddleware");
 
 const { addCollection, getAllCollections, updateCollection, deleteCollection } = require("../controllers/eshop/collections.controller")
-const { addCategory, getAllCategories, getStyles, updateCategory, deleteCategory } = require("../controllers/eshop/category.controller")
+const { addCategory, getAllCategories, getStyles, updateCategory, deleteCategory, getCategoryByName } = require("../controllers/eshop/category.controller")
 const { addStyle, getAllStyles, updateStyle, deleteStyle } = require("../controllers/eshop/style.controller")
 const { addColor, getColors, updateColor, deleteColor } = require("../controllers/eshop/color.controller")
 const { addProduct, getProducts, searchProducts, getProductById, getProductForUpdate, updateProduct, deleteProduct, getProductsForDiscount } = require("../controllers/eshop/product.controller")
@@ -29,6 +29,7 @@ router.delete("/collections/delete-collection/:id",deleteCollection)
 
 router.post("/categories/add-category",uploadFilesOnS3,addCategory)
 router.get("/categories/get-all-categories",getAllCategories)
+router.get("/categories/get-category-by-name/:name",getCategoryByName)
 router.get("/categories/:id/styles",getStyles)
 router.put("/categories/update-category/:id",uploadFilesOnS3,updateCategory)
 router.delete("/categories/delete-category/:id",deleteCategory)

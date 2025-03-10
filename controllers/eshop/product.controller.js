@@ -70,7 +70,7 @@ const getProducts = async (req, res) => {
     const categories = await Category_eshop.find({ _id: { $in: uniqueCategories } }).select("name");
     const styles = await Style_eshop.find({ _id: { $in: uniqueStyles } }).select("name");
 
-    const data = await Product_eshop.find(filter).populate(["diamond_discount", "gold_discount", "discount_on_total", "labor", "diamonds.diamond", {
+    const data = await Product_eshop.find(filter).populate(["diamond_discount","color1","color2","color3", "gold_discount", "discount_on_total", "labor", "diamonds.diamond", {
       path: "golds",
       populate: [
         { path: "making_charge" },

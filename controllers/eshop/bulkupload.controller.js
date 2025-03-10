@@ -1,4 +1,5 @@
 const xlsx = require("xlsx");
+const fs = require("fs")
 const Product = require("../../models/eshop/product.model");
 const Style = require("../../models/eshop/style.model");
 const Category = require("../../models/eshop/category.model");
@@ -322,6 +323,11 @@ const bulkUploadXlsx = async (req, res) => {
     }
     console.log("All Data Imported Successfully.");
     res.status(200).json({ message: "Inserted Successfully" });
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+      }
+    });
   } catch (err) {
     res.status(400).json(err.message);
     console.error("Error Inserting Data:", err);
