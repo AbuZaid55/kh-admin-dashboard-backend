@@ -1,5 +1,5 @@
 const xlsx = require("xlsx");
-const fs = require("fs")
+const fs = require("fs");
 const Product = require("../../models/eshop/product.model");
 const Style = require("../../models/eshop/style.model");
 const Category = require("../../models/eshop/category.model");
@@ -16,18 +16,14 @@ const bulkUploadXlsx = async (req, res) => {
       return res.status(400).json({ error: "No file uploaded." });
     }
     let jsonData = [];
-    const filePath = req.file.path;
+    const fileBuffer = req.file.buffer;
 
-    if (filePath.endsWith(".xlsx")) {
-      const workbook = xlsx.readFile(filePath);
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      jsonData = xlsx.utils.sheet_to_json(sheet, {
-        defval: null,
-      });
-    } else {
-      throw new Error("Unsupported file format. Please provide XLSX file.");
-    }
+    const workbook = xlsx.read(fileBuffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    jsonData = xlsx.utils.sheet_to_json(sheet, {
+      defval: null,
+    });
 
     if (jsonData.length === 0) {
       throw new Error("File is empty or improperly formatted.");
@@ -188,7 +184,7 @@ const bulkUploadXlsx = async (req, res) => {
 
       //  Handle Golds
       if (item["Gold_carat"]) {
-        item["goldArray"] = item["Gold_carat"].split("|").map((carat) => ({ carat:carat.trim() }));
+        item["goldArray"] = item["Gold_carat"].split("|").map((carat) => ({ carat: carat.trim() }));
       }
       if (item.goldArray) {
         for (let gold of item.goldArray) {
@@ -216,7 +212,7 @@ const bulkUploadXlsx = async (req, res) => {
         for (let shape of diamondShapes) {
           for (let grade of item.grade) {
             let existingDiamond = await Diamond.findOne({
-              grade:grade.trim(),
+              grade: grade.trim(),
               variant: { $regex: new RegExp(`\\b${shape}\\b`, "i") },
             });
 
@@ -323,11 +319,6 @@ const bulkUploadXlsx = async (req, res) => {
     }
     console.log("All Data Imported Successfully.");
     res.status(200).json({ message: "Inserted Successfully" });
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error("Error deleting file:", err);
-      }
-    });
   } catch (err) {
     res.status(400).json(err.message);
     console.error("Error Inserting Data:", err);

@@ -5,7 +5,7 @@ const s3 = require("../config/S3");
 
 const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || '';
 
-const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif"];
+const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ];
 
 const uploads = multer({
   storage: multerS3({
@@ -22,7 +22,7 @@ const uploads = multer({
     if (allowedImageTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Only JPG, JPEG, PNG, and WEBP images are allowed"), false);
+      cb(new Error("Only JPG, JPEG, PNG, WEBP and XLXS are allowed"), false);
     }
   },
 });
@@ -40,7 +40,8 @@ const uploadFilesOnS3 = async (req, res, next) => {
     { name: "images3"}, 
     { name: "images"}, 
     { name: "image"}, 
-    { name: "nav_image"}, 
+    { name: "nav_image"},   
+    {name: "file"}
   ])(req, res, (err) => {
     if (err) {
       if (err instanceof multer.MulterError) {
