@@ -1,5 +1,3 @@
-
-
 const { uploads } = require("../services/S3_Services.js");
 const {
     getTerms,
@@ -21,6 +19,31 @@ const {
 } =require("../controllers/footer.controller.js")
 const express=require("express");
 const router=express.Router();
+const multer = require('multer');
+const { getOurStory, updateOurDesire, addDesireFeat, deleteDesireFeat, updateOurValue, addValue, deleteValue, updatePromoter, addpromoter, deletepromoter, updateOurLogo, toggleOurStory } = require('../controllers/ourStory.controller');
+// Multer storage config
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, "uploads/khwaahish/"),
+    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+});
+
+// File filter function
+const fileFilter = (req, file, cb) => {
+    // Accept images and videos only
+    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image and video files are allowed!'), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 10 * 1024 * 1024, // 10 MB limit
+    }
+});
 
 
 
@@ -39,6 +62,9 @@ router.route('/tnc/:id/term/:termId').delete(removeTerm);
 router.route('/tnc/:id/term/:termId/condition').post(addCondition);
 router.route('/tnc/:id/term/:termId/condition/:conditionIndex').delete(removeCondition);
 
+// Our Story
+
+
 // Footer
 router.route('/footer')
     .get(getFooters)
@@ -51,6 +77,28 @@ router.route('/footer/:id')
 
 router.route('/footer/domain/:domain')
     .get(getFooterByDomain);
+
+// OURSTORY 
+router.get("/our-story",getOurStory);
+router.put("/our-story/toggle",toggleOurStory);
+// our-desire 
+router.put("/our-story/desire",upload.single("desire_image"),updateOurDesire)
+router.post("/our-story/desire",addDesireFeat)
+router.delete("/our-story/desire",deleteDesireFeat)
+
+// our-logo
+router.put("/our-story/logo",upload.single("logo_img"),updateOurLogo)
+
+// our-value
+router.put("/our-story/value",updateOurValue)
+router.post("/our-story/value",addValue)
+router.delete("/our-story/value",deleteValue)
+
+// our-promoters
+router.put("/our-story/promoter",updatePromoter)
+router.post("/our-story/promoter",upload.single("profileImg"),addpromoter)
+router.delete("/our-story/promoter",deletepromoter)
+
 
 
 module.exports = router;

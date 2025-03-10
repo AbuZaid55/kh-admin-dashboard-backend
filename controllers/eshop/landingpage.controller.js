@@ -2,6 +2,21 @@ const LandingPage = require("../../models/eshop/landingpage.model.js"); // Mongo
 const { deleteFileByLocationFromS3 } = require("../../services/S3_Services")
 
 
+// Helper function to delete file from local storage
+const deleteLocalFile = (filePath) => {
+  try {
+    if (!filePath) return;
+    const fullPath = path.join(__dirname, "../../", filePath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+      console.log(`File deleted: ${fullPath}`);
+    }
+  } catch (error) {
+    console.error("Error deleting file:", error);
+  }
+};
+
+
 const landingPageUpdate=async (req, res) => {
     try {
         const {
@@ -63,9 +78,11 @@ const landingPageUpdate=async (req, res) => {
         for (const field of fileFields) {
             if (req.files[field]) {
             if (page[field]) {
-                deleteFileByLocationFromS3(page[field]);
+                // deleteFileByLocationFromS3(page[field]);
+                deleteLocalFile(page[field]);
             }
-            updateData[field] = req.files[field][0].location;
+            // updateData[field] = req.files[field][0].location;
+            updateData[field] = req.files[field][0].path;
             }
         }
         const updated=await LandingPage.findOneAndUpdate({eshop_name:"Gulz"},updateData,{ new: true, upsert: true })
@@ -91,7 +108,8 @@ const addPromise = async (req, res) => {
       
       let promise = {};
       if(description) promise.description=description;
-      const image = req.file ? req.file.location : '';
+      // const image = req.file ? req.file.location : '';
+      const image = req.file ? req.file.path : '';
       if(image) promise.image=image;
       const landingPage = await LandingPage.findOne({ eshop_name: "Gulz" });
       landingPage.promises_list.push(promise);
@@ -113,7 +131,8 @@ const deletePromise = async (req, res) => {
         return res.status(404).json({ message: 'Promise not found' });
     }
     if(promise.image){
-        deleteFileByLocationFromS3(promise.image);
+        // deleteFileByLocationFromS3(promise.image);
+        deleteLocalFile(promise.image);
     }
     landingPage.promises_list = landingPage.promises_list.filter(p => p.id !== id);
     await landingPage.save();
@@ -185,7 +204,7 @@ const toggleSection = async (req, res) => {
       res.status(200).json({ 
         success: true, 
         message: `Section ${section} visibility updated successfully`,
-        value: updated[section]
+        data: updated
       });
     } catch (error) {
       console.error("Error toggling section visibility:", error);

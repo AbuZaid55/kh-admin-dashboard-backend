@@ -66,7 +66,7 @@ const updateGeneral=async(req,res)=>{
       if (req.files && req.files[field]) {
         // Delete old file if exists
         if (homepage[field]) {
-            // deleteFileByLocationFromS3(homepage[field]);
+            //await deleteFileByLocationFromS3(homepage[field]);
             deleteLocalFile(homepage[field]);
         }
         // Save new file path
@@ -118,7 +118,7 @@ const updateHallMark=async(req,res)=>{
       // Delete old hallmark images if new ones are provided
       if (homepage.hallmark_images && homepage.hallmark_images.length > 0) {
       homepage.hallmark_images.forEach(imagePath => {
-        // deleteFileByLocationFromS3(imagePath);
+        //await deleteFileByLocationFromS3(imagePath);
         deleteLocalFile(imagePath);
       });
       }
@@ -182,7 +182,8 @@ const addHighJewelCarousal = async (req, res) => {
     if (!high_title || !high_short_desc || !high_slug_name || !high_slug) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
-    const high_Image = req.file ? req.file.location.replace(/\\/g, '/') : null;
+    // const high_Image = req.file ? req.file.location.replace(/\\/g, '/') : null;
+    const high_Image = req.file ? req.file.path.replace(/\\/g, '/') : null;
 
     let homepage = await Homepage.findOne({ homepage_name: "Khwaahish" });
     if (!homepage) {

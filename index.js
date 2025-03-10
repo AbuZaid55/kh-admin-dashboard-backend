@@ -11,7 +11,7 @@ const { dbConnect } = require("./config/dbConnect");
 // const storeEshopRouter = require("./routes/store-eshop.routes.js")
 // const storeKhwRouter = require("./routes/store-khw.routes.js");
 
-// const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
+const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
 const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
@@ -79,7 +79,7 @@ app.get("/test",(req,res)=>{
 
 
 // Customization
-// app.use("/eshop/customization/",eshopCustomizationRoutes);
+app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
 
 // Customization khwaahish 

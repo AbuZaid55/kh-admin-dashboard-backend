@@ -1,7 +1,7 @@
 const CollectionAd = require("../../models/khwaahish/CollectionAd.js");
 // const { deleteFileByLocationFromS3 } = require("../../services/S3_Services.js");
 
-const allowedCollectionHomepage = ["Asai","Noor", "Bridal Edit", "Polki Edit","Pache"];
+const allowedCollectionHomepage = ["Aasai","Noor", "Bridal Edit", "Polki Edit","Pache"];
 
 
 // Helper function to delete file from local storage
@@ -32,6 +32,7 @@ exports.getCollectionAd = async (req, res) => {
             collectionAd = new CollectionAd({ collection_homepage_name });
             await collectionAd.save();
         }
+        
         res.status(200).json({ success: true, data: collectionAd });
     } catch (error) {
         console.error("Error fetching CollectionAd:", error);
@@ -63,7 +64,7 @@ exports.updateGeneral = async (req, res) => {
         for (const field of fileFields) {
             if (req.files && req.files[field]) {
                 if (collectionAd[field]) {
-                    // deleteFileByLocationFromS3(collectionAd[field]);
+                    // await deleteFileByLocationFromS3(collectionAd[field]);
                     deleteLocalFile(collectionAd[field]);
                 }
                 // updateData[field] = req.files[field][0].location.replace(/\\/g, '/');
@@ -86,12 +87,13 @@ exports.updateGeneral = async (req, res) => {
 
 exports.updateCollection = async (req, res) => {
     try {
-        console.log(req.body);
+
         
         const { collection_homepage_name, collection_data_section_title, collection_data_title, collection_data_desc } = req.body;
         if (!allowedCollectionHomepage.includes(collection_homepage_name)) {
             return res.status(400).json({ success: false, message: "Invalid collection homepage name" });
         }
+        
 
         let collectionAd = await CollectionAd.findOne({ collection_homepage_name });
         if (!collectionAd) {
@@ -104,13 +106,13 @@ exports.updateCollection = async (req, res) => {
         if (collection_data_title !== undefined) updateData.collection_data_title = collection_data_title;
         if (collection_data_desc !== undefined) updateData.collection_data_desc = collection_data_desc;
 
-        if (req.files && req.files['collection_data_image']) {
+        if (req.file) {
             if (collectionAd.collection_data_image) {
-                // deleteFileByLocationFromS3(collectionAd.collection_data_image);
+                //await deleteFileByLocationFromS3(collectionAd.collection_data_image);
                 deleteLocalFile(collectionAd.collection_data_image);
             }
             // updateData['collection_data_image'] = req.files['collection_data_image'][0].location.replace(/\\/g, '/');
-            updateData['collection_data_image'] = req.files['collection_data_image'][0].path.replace(/\\/g, '/');
+            updateData['collection_data_image'] = req.file.path.replace(/\\/g, '/');
         }
 
         const updated = await CollectionAd.findOneAndUpdate(
@@ -128,7 +130,6 @@ exports.updateCollection = async (req, res) => {
 
 exports.updateJewelAtGlance = async (req, res) => {
     try {
-        console.log(req.body);
         
         const { collection_homepage_name, jewel_at_glance_title, jewel_at_glance_desc } = req.body;
         if (!allowedCollectionHomepage.includes(collection_homepage_name)) {
@@ -148,7 +149,7 @@ exports.updateJewelAtGlance = async (req, res) => {
         if (req.files && req.files['jewel_at_glance_images']) {
             if (collectionAd.jewel_at_glance_images && collectionAd.jewel_at_glance_images.length > 0) {
                 collectionAd.jewel_at_glance_images.forEach(imagePath => {
-                    // deleteFileByLocationFromS3(imagePath);
+                    //await deleteFileByLocationFromS3(imagePath);
                     deleteLocalFile(imagePath);
                 });
             }
@@ -190,7 +191,7 @@ exports.updateCategorySection = async (req, res) => {
         if (req.files && req.files['category_section_images']) {
             if (collectionAd.category_section_images && collectionAd.category_section_images.length > 0) {
                 collectionAd.category_section_images.forEach(imagePath => {
-                    // deleteFileByLocationFromS3(imagePath);
+                    //await deleteFileByLocationFromS3(imagePath);
                     deleteLocalFile(imagePath);
                 });
             }
@@ -299,7 +300,7 @@ exports.deleteTopic = async (req, res) => {
         const topicToDelete = collectionAd.topics.find(topic => topic._id.toString() === id);
         if (topicToDelete && topicToDelete.topicImages) {
             topicToDelete.topicImages.forEach(imagePath => {
-                // deleteFileByLocationFromS3(imagePath);
+                //await deleteFileByLocationFromS3(imagePath);
                 deleteLocalFile(imagePath);
             });
         }
@@ -337,7 +338,7 @@ exports.updateCuratorThought = async (req, res) => {
 
         if (req.files && req.files['curator_profileImg']) {
             if (collectionAd.curator_profileImg) {
-                // deleteFileByLocationFromS3(collectionAd.curator_profileImg);
+                //await deleteFileByLocationFromS3(collectionAd.curator_profileImg);
                 deleteLocalFile(collectionAd.curator_profileImg);
             }
             // updateData['curator_profileImg'] = req.files['curator_profileImg'][0].location.replace(/\\/g, '/');
