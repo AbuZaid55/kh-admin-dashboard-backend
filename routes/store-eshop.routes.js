@@ -17,6 +17,7 @@ const {addMakingCharge,getMakingCharges, updateMakingCharge, deleteMakingCharge}
 const {addWastageCharge,getWastageCharge, updateWastageCharge, deleteWastageCharge} = require("../controllers/eshop/wastage_charge.controller")
 const { addRecommended, getRecommended, updateRecommended, deleteRecommended } = require("../controllers/eshop/recommended.controller");
 const { bulkUploadXlsx } = require("../controllers/eshop/bulkupload.controller");
+const { getImageUrls } = require("../controllers/eshop/getImage.controller");
 
 
 
@@ -90,6 +91,8 @@ router.post("/recommended/add-recommended",uploadFilesOnS3,addRecommended)
 router.get("/recommended/get-all-recommended",getRecommended)
 router.put("/recommended/update-recommended/:id",uploadFilesOnS3,updateRecommended)
 router.delete("/recommended/delete-recommended/:id",deleteRecommended)
+
+router.post("/get-image-urls",uploadFilesOnS3,getImageUrls)
 
 
 module.exports = router;

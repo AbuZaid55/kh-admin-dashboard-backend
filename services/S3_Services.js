@@ -67,7 +67,7 @@ const uploadFilesOnS3 = async (req, res, next) => {
     req.imageUrls = imageUrls;
     req.imageUrl = imageUrl ? imageUrl[0] : null;
     req.navImageUrl = navImageUrl ? navImageUrl[0] : null;
-
+    
     next();
   });
 };
