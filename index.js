@@ -61,6 +61,14 @@ async function createAdmin(phone, email, password) {
 // Example usage
 // createAdmin("+911234567890", "example@rittzdigital.com","rittzdigital92").catch(err => console.log(err));
 
+
+// Increase Express request timeout to 10 minutes
+app.use((req, res, next) => {
+    req.setTimeout(600000); // ⏳ 10-minute timeout for incoming requests
+    res.setTimeout(600000); // ⏳ 10-minute timeout for responses
+    next();
+});
+
 // USER AUTH API 
 app.use(cors({
     origin:"*",
