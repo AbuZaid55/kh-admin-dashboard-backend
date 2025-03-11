@@ -29,6 +29,9 @@ const bulkUploadXlsx = async (req, res) => {
       throw new Error("File is empty or improperly formatted.");
     }
 
+    const productList = []
+    let count = 0
+
     for (let item of jsonData) {
       let styleId = null;
       let categoryId = null;
@@ -47,7 +50,6 @@ const bulkUploadXlsx = async (req, res) => {
         $or: [{ sku: item.SKU }, { name: item.Name }],
       });      
       if (existingProduct) {
-        console.log(` Product with SKU ${item.SKU} already exists. Updating Diamonds...`);
         continue;
       }
 
@@ -88,7 +90,6 @@ const bulkUploadXlsx = async (req, res) => {
             image: { key: "", url: "" },
             description: "",
           });
-          console.log(`New Category Created: ${categoryName}`);
           categoryId = newCategory._id;
         }
       }
@@ -112,7 +113,6 @@ const bulkUploadXlsx = async (req, res) => {
               url: "",
             },
           });
-          console.log(`New Collection Created: ${collectionName}`);
           collectionId = newCollection._id;
         }
       }
@@ -224,7 +224,6 @@ const bulkUploadXlsx = async (req, res) => {
                 variant: shape,
                 priceRanges: [],
               });
-              console.log(`New Diamond Created: ${grade} - ${shape}`);
             }
 
             const pcs = [];
@@ -242,7 +241,6 @@ const bulkUploadXlsx = async (req, res) => {
               pcs: pcs.map(({ count, weight }) => ({ count, weight })),
               _id: false,
             });
-            console.log(` New Diamond Added to Product: ${grade} - ${shape}`);
           }
         }
       }
@@ -260,7 +258,6 @@ const bulkUploadXlsx = async (req, res) => {
             price: item["gold_labor_price"] || 0,
           });
           laborId = newLabor._id;
-          console.log(` New Labor Created: ${item["gold_labor_types"]}`);
         }
       }
 
@@ -274,14 +271,12 @@ const bulkUploadXlsx = async (req, res) => {
           });
           if (existingRecommend) {
             recommendedForIds.push(existingRecommend._id);
-            console.log(` Recommended For Updated: ${recommendName}`);
           } else {
             let newRecommend = await RecommendedFor.create({
               name: recommendName.trim(),
               image: { key: "", url: "" },
             });
             recommendedForIds.push(newRecommend._id);
-            console.log(`New Recommended For Created: ${recommendName}`);
           }
         }
       }
@@ -317,13 +312,18 @@ const bulkUploadXlsx = async (req, res) => {
         recommendedFor: recommendedForIds,
       };
 
-      await Product(productData).save();
+      productList.push(productData)
+      count = count+1
+
+      console.log(count," Product Inserted")
+
     }
+    await Product.insertMany(productList)
     console.log("All Data Imported Successfully.");
     res.status(200).json({ message: "Inserted Successfully" });
   } catch (err) {
-    res.status(400).json(err.message);
     console.error("Error Inserting Data:", err);
+    res.status(400).json(err.message);
   }
 };
 
