@@ -1,7 +1,5 @@
 {
     "version": 2,
     "builds":[{"src":"./index.js","use":"@vercel/node"}],
-    "routes":[{"src":"/(.*)","dest":"/"}],
-    "functions": {"./controllers/eshop/bulkupload.controller.js": {"memory": 2048, "maxDuration": 60}}
-      
+    "routes":[{"src":"/(.*)","dest":"/"}]
 }
