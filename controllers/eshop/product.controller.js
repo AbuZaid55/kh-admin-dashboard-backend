@@ -121,6 +121,22 @@ const getProductById = async (req, res) => {
   }
 };
 
+const getProductByName = async(req,res)=>{
+  try {
+    const name = req?.params?.name 
+    const data = await Product_eshop.findOne({name:{ $regex: new RegExp(`^${name}$`, "i") }}).populate(["collection","category","style","diamond_discount","color1","color2","color3", "gold_discount", "discount_on_total", "labor", "diamonds.diamond","recommendedFor", {
+      path: "golds",
+      populate: [
+        { path: "making_charge" },
+        { path: "wastage_charge" }
+      ]
+    },])
+    res.status(200).json(data)
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 const getProductForUpdate = async (req, res) => {
   try {
     const _id = req.params?.id;
@@ -246,4 +262,4 @@ const searchProducts = async (req, res) => {
   }
 };
 
-module.exports = { addProduct, getProducts,getProductsForDiscount, getProductById, getProductForUpdate, updateProduct, deleteProduct, searchProducts };
+module.exports = { addProduct, getProducts,getProductsForDiscount, getProductById,getProductByName, getProductForUpdate, updateProduct, deleteProduct, searchProducts };

@@ -43,7 +43,9 @@ const bulkUploadXlsx = async (req, res) => {
       let diamondArray = [];
 
       //Check if Product Already Exists
-      const existingProduct = await Product.findOne({ sku: item.SKU });
+      const existingProduct = await Product.findOne({
+        $or: [{ sku: item.SKU }, { name: item.Name }],
+      });      
       if (existingProduct) {
         console.log(` Product with SKU ${item.SKU} already exists. Updating Diamonds...`);
         continue;

@@ -5,7 +5,7 @@ const s3 = require("../config/S3");
 
 const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || '';
 
-const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ];
+const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif" ];
 
 const uploads = multer({
   storage: multerS3({
@@ -41,7 +41,6 @@ const uploadFilesOnS3 = async (req, res, next) => {
     { name: "images"}, 
     { name: "image"}, 
     { name: "nav_image"},   
-    {name: "file"}
   ])(req, res, (err) => {
     if (err) {
       if (err instanceof multer.MulterError) {
