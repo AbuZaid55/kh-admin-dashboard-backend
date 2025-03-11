@@ -312,13 +312,13 @@ const bulkUploadXlsx = async (req, res) => {
         recommendedFor: recommendedForIds,
       };
 
-      productList.push(productData)
+      // productList.push(productData)
       count = count+1
 
       console.log(count," Product Inserted")
 
+      await Product(productData).save()
     }
-    await Product.insertMany(productList)
     console.log("All Data Imported Successfully.");
     res.status(200).json({ message: "Inserted Successfully" });
   } catch (err) {
