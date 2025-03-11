@@ -63,6 +63,12 @@ async function createAdmin(phone, email, password) {
 
 
 // Increase Express request timeout to 10 minutes
+// app.use((req, res, next) => {
+//     req.setTimeout(600000); // ⏳ 10-minute timeout for incoming requests
+//     res.setTimeout(600000); // ⏳ 10-minute timeout for responses
+//     next();
+// });
+
 app.use((req, res, next) => {
     req.setTimeout(600000); // ⏳ 10-minute timeout for incoming requests
     res.setTimeout(600000); // ⏳ 10-minute timeout for responses
