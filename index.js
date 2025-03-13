@@ -16,11 +16,8 @@ const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.j
 const storeKhwRouter = require("./routes/store-khw.routes.js");
 
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
-<<<<<<< HEAD
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
 const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
-=======
->>>>>>> e3da2e1f1bc6c283e6310a2eec0a941591cc2c23
 
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
@@ -99,22 +96,9 @@ app.use("/admin/auth", adminAuthRouter);
 // Customization
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
-// app.use("/admin/auth", adminAuthRouter);
-// app.use("/api/testimonials", testimonialRoutes);
+app.use("/admin/auth", adminAuthRouter);
+app.use("/api/testimonials", testimonialRoutes);
 
-<<<<<<< HEAD
-=======
-// Customization
-app.use("/eshop/customization/",eshopCustomizationRoutes);
-// app.use("/eshopBenefits", eshopBenefitsRoutes);
-
-// QOH Homepage Customization Routes
-app.use("/api/v1/qoh-homepage/customization", qoh_HomepageCustomizationRouter);
-
-// Collection Homepage Customization Routes
-app.use("/api/v1/collection-homepage/customization", collectionHomepageCustomizationRouter);
-
->>>>>>> e3da2e1f1bc6c283e6310a2eec0a941591cc2c23
 // Customization khwaahish 
 app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);
 
