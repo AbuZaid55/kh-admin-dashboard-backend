@@ -25,14 +25,14 @@ const phoneOtp = async (req, res) => {
 
     //genereate otp and send via sms
     const OTP = generateOTP();
-    // IN PRODUCTION: sendOTPViaSMS(phone, OTP);
+    await sendOTPViaSMS(phone, OTP);
 
     const hashedOTP = await bcrypt.hash(OTP, 10);
 
     // store otp in redis for user can not regenerate otp before  2 min
     await redisClient.set(`OTP-${phone}`, hashedOTP, { EX: 2 * 60 });
 
-    res.status(200).json({ message: "Otp send successfully", otp: OTP });
+    res.status(200).json({success:true, message: "Otp send successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -67,7 +67,7 @@ const phoneOtpVerifyAndChangePassword = async (req, res) => {
     user.password = hashedPassword;
     await user.save();
 
-    res.status(200).json({ message: "Password change successfully" });
+    res.status(200).json({success:true, message: "Password change successfully" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -191,12 +191,12 @@ const emailOtp = async(req,res)=>{
     if (redisOtp && ttl > 0) throw new Error(`Please wait ${ttl} seconds before requesting a new OTP!`);
 
     const otp = generateOTP()
-    sendOTPViaEmail(email,otp)
+    await sendOTPViaEmail(email,otp)
 
     // store otp in redis for user can not regenerate otp before  2 min
     const hashedOTP = await bcrypt.hash(otp,10)
     await redisClient.set(`Email-otp-${_id}`, JSON.stringify({ email: email, otp: hashedOTP }), { EX: 2 * 60 });
-    res.status(200).json({message:"Otp send successfully to your email id!",otp:otp})
+    res.status(200).json({success:true,message:"Otp send successfully to your email id!"})
   } catch (error) {
     console.log(error)
     res.status(400).json({error:error.message})
@@ -223,7 +223,7 @@ const emailOtpVerify = async(req,res)=>{
     await user.save()
 
     await redisClient.del(`Email-otp-${_id}`);
-    res.status(200).json({message:"Email verified successfully"})
+    res.status(200).json({success:true,message:"Email verified successfully"})
   } catch (error) {
     res.status(400).json({error:error.message})
   }

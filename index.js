@@ -14,6 +14,9 @@ const commonCustomizationRoutes= require("./routes/common-customization.routes.j
 const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
+const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
+const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
+
 const storeKhwRouter = require("./routes/store-khw.routes.js")
 const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
 
@@ -58,7 +61,8 @@ async function createAdmin(phone, email, password) {
 
 
 // Example usage
-// createAdmin("+911234567890", "example@rittzdigital.com","rittzdigital92").catch(err => console.log(err));
+// createAdmin("actualadminPhone", "actualAdminEmail","DummyPass").catch(err => console.log(err));
+
 
 
 // Increase Express request timeout to 10 minutes
@@ -76,13 +80,9 @@ app.use((req, res, next) => {
 
 // USER AUTH API 
 app.use(cors({
-    origin:"*",
+    origin:["http://localhost:5173"],
     credentials:true
 }))
-
-app.get("/test",(req,res)=>{
-    res.status(200).json({message:"Success"})
-})
 app.use("/user/auth",userRouter);
 app.use("/user/profile/",userProfileRouter);
 app.use('/api/press-releases', pressReleaseRoutes);
@@ -90,7 +90,7 @@ app.use('/store/eshop', storeEshopRouter);
 app.use('/store/khw', storeKhwRouter);
 
 
-// app.use("/admin/auth", adminAuthRouter);
+app.use("/admin/auth", adminAuthRouter);
 
 
 // Customization
@@ -110,19 +110,7 @@ app.use("/api/v1/qoh-homepage/customization", qoh_HomepageCustomizationRouter);
 app.use("/api/v1/collection-homepage/customization", collectionHomepageCustomizationRouter);
 
 // Customization khwaahish 
-app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);// app.use("/admin/auth", adminAuthRouter);
-app.use("/api/testimonials", testimonialRoutes);
-
-// Customization
-app.use("/eshop/customization/",eshopCustomizationRoutes);
-app.use("/eshopBenefits", eshopBenefitsRoutes);
-
-// QOH Homepage Customization Routes
-app.use("/api/v1/qoh-homepage/customization", qoh_HomepageCustomizationRouter);
-
-// Collection Homepage Customization Routes
-app.use("/api/v1/collection-homepage/customization", collectionHomepageCustomizationRouter);
-
+app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);
 
 // Not Found Route & Error Middleware 
 app.use("*",(req, res, next) => {
