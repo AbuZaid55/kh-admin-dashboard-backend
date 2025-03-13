@@ -13,18 +13,9 @@ const storeEshopRouter = require("./routes/store-eshop.routes.js")
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
 const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
-const storeKhwRouter = require("./routes/store-khw.routes.js");
-
-const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
-
-const storeKhwRouter = require("./routes/store-khw.routes.js");
-
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 const storeKhwRouter = require("./routes/store-khw.routes.js")
 const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
-
-const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
-const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
 const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
