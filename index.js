@@ -8,18 +8,21 @@ const userProfileRouter=require("./routes/user.profile.routes.js");
 const userRouter=require("./routes/user.auth.routes.js");
 const adminAuthRouter = require("./routes/admin.auth.routes.js");
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
-const storeEshopRouter = require("./routes/store-eshop.routes.js")
+const storeEshopRouter = require("./routes/store-eshop.routes.js");
+
 
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
 const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
-
-const storeKhwRouter = require("./routes/store-khw.routes.js");
-
+const maw_homepageCustomizationRouter = require("./routes/maw_homepage-customization.routes.js");
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
+
 
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
 const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
+
+const storeKhwRouter = require("./routes/store-khw.routes.js")
+// const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
 
 const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
@@ -59,7 +62,8 @@ async function createAdmin(phone, email, password) {
 
 
 // Example usage
-// createAdmin("+911234567890", "example@rittzdigital.com","rittzdigital92").catch(err => console.log(err));
+// createAdmin("actualadminPhone", "actualAdminEmail","DummyPass").catch(err => console.log(err));
+
 
 
 // Increase Express request timeout to 10 minutes
@@ -80,10 +84,6 @@ app.use(cors({
     origin:"*",
     credentials:true
 }))
-
-app.get("/test",(req,res)=>{
-    res.status(200).json({message:"Success"})
-})
 app.use("/user/auth",userRouter);
 app.use("/user/profile/",userProfileRouter);
 app.use('/api/press-releases', pressReleaseRoutes);
@@ -91,17 +91,14 @@ app.use('/store/eshop', storeEshopRouter);
 app.use('/store/khw', storeKhwRouter);
 
 
-// app.use("/admin/auth", adminAuthRouter);
+app.use("/admin/auth", adminAuthRouter);
 
 
 // Customization
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
-// app.use("/admin/auth", adminAuthRouter);
-// app.use("/api/testimonials", testimonialRoutes);
 
-// Customization
-app.use("/eshop/customization/",eshopCustomizationRoutes);
+// app.use("/api/testimonials", testimonialRoutes);
 // app.use("/eshopBenefits", eshopBenefitsRoutes);
 
 // QOH Homepage Customization Routes
@@ -112,6 +109,9 @@ app.use("/api/v1/collection-homepage/customization", collectionHomepageCustomiza
 
 // Customization khwaahish 
 app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);
+
+// MAW Homepage Customization Routes
+app.use("/api/v1/maw-homepage/customization", maw_homepageCustomizationRouter);
 
 // Not Found Route & Error Middleware 
 app.use("*",(req, res, next) => {
