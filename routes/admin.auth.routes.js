@@ -1,5 +1,5 @@
 const express = require('express');
-const { loginPhoneOTP,loginPhoneOTPVerify,loginEmailOTP,loginEmailOTPVerify, logout } = require('../controllers/user.auth.controller.js');
+const { loginPhoneOTP,loginPhoneOTPVerify,loginEmailOTP,loginEmailOTPVerify, logout, Adminprofile } = require('../controllers/admin.auth.controller.js');
 const { isAuth } = require('../middlewares/authMiddleware.js');
 const isAdmin = require('../middlewares/isAdmin.js');
 
@@ -21,8 +21,6 @@ router.post('/login/email-otp-verify', loginEmailOTPVerify);
 router.post('/logout',isAuth ,isAdmin, logout);
 
 // Route to test if user is admin
-router.get('/test-admin', isAuth, isAdmin, (req, res) => {
-    res.status(200).json({ message: 'You are an admin' });
-});
+router.post('/admin-profile', isAuth, isAdmin, Adminprofile);
 
 module.exports = router;
