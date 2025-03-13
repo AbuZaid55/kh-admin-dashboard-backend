@@ -8,18 +8,24 @@ const userProfileRouter=require("./routes/user.profile.routes.js");
 const userRouter=require("./routes/user.auth.routes.js");
 const adminAuthRouter = require("./routes/admin.auth.routes.js");
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
-const storeEshopRouter = require("./routes/store-eshop.routes.js")
+const storeEshopRouter = require("./routes/store-eshop.routes.js");
+
+
+const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
+const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
+const maw_homepageCustomizationRouter = require("./routes/maw_homepage-customization.routes.js");
+const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 
 
 const storeKhwRouter = require("./routes/store-khw.routes.js");
 
-const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
-const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
-const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
 const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
+
+const storeKhwRouter = require("./routes/store-khw.routes.js")
+// const eshopBenefitsRoutes = require("./routes/eshopBenefits.routes");
 
 const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
@@ -78,7 +84,7 @@ app.use((req, res, next) => {
 
 // USER AUTH API 
 app.use(cors({
-    origin:["http://localhost:5173"],
+    origin:"*",
     credentials:true
 }))
 app.use("/user/auth",userRouter);
@@ -94,10 +100,21 @@ app.use("/admin/auth", adminAuthRouter);
 // Customization
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
-app.use("/admin/auth", adminAuthRouter);
+
+// app.use("/api/testimonials", testimonialRoutes);
+// app.use("/eshopBenefits", eshopBenefitsRoutes);
+
+// QOH Homepage Customization Routes
+app.use("/api/v1/qoh-homepage/customization", qoh_HomepageCustomizationRouter);
+
+// Collection Homepage Customization Routes
+app.use("/api/v1/collection-homepage/customization", collectionHomepageCustomizationRouter);
 
 // Customization khwaahish 
 app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);
+
+// MAW Homepage Customization Routes
+app.use("/api/v1/maw-homepage/customization", maw_homepageCustomizationRouter);
 
 // Not Found Route & Error Middleware 
 app.use("*",(req, res, next) => {
