@@ -10,10 +10,17 @@ const adminAuthRouter = require("./routes/admin.auth.routes.js");
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
 const storeEshopRouter = require("./routes/store-eshop.routes.js");
 
+
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
 const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 const maw_homepageCustomizationRouter = require("./routes/maw_homepage-customization.routes.js");
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
+
+
+const storeKhwRouter = require("./routes/store-khw.routes.js");
+
+
+
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
 const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
 
@@ -77,7 +84,7 @@ app.use((req, res, next) => {
 
 // USER AUTH API 
 app.use(cors({
-    origin:["http://localhost:5173"],
+    origin:"*",
     credentials:true
 }))
 app.use("/user/auth",userRouter);
@@ -93,6 +100,7 @@ app.use("/admin/auth", adminAuthRouter);
 // Customization
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
+
 // app.use("/api/testimonials", testimonialRoutes);
 // app.use("/eshopBenefits", eshopBenefitsRoutes);
 
