@@ -37,7 +37,7 @@ const loginPhoneOTP = async (req, res) => {
         .json({ message: "Invalid Credential" });
     }
 
-    if(user.phone != '+917738941646' ){
+    if(user.phone != '+actual_admin_phone' ){
         return res
         .status(404)
         .json({ message: "Invalid Credential" });
@@ -108,12 +108,21 @@ const loginPhoneOTPVerify = async (req, res) => {
     const token = generateToken(user);
 
     // Set JWT token in HTTP-only cookie
-    res.cookie("auth_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 1000 * 24 * 7, // 1 Week expiry
-      path: "/"
+    // res.cookie("auth_token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "Strict",
+    //   maxAge: 60 * 60 * 1000 * 24 * 7, // 1 Week expiry
+    //   path: "/"
+    // });
+
+     // Set JWT token in HTTPS-only cookie
+     res.cookie("token", token, {
+      httpOnly: true,  // Prevents client-side access
+      secure: true,   // Set false for HTTPS (development)
+      sameSite: "none", // Allows same-site requests
+      maxAge: 24 * 60 * 60 * 1000 *7, // 7 day
+      path:"/"
     });
 
     res.status(200).json({success:true, message: "Login successful" });
@@ -151,21 +160,11 @@ const loginEmailOTP = async (req, res) => {
         .json({ message: "Invalid Credential" });
     }
 
-    // if(user.email != "anupsuresh216@gmail.com"){
+    // if(user.email != "actual_admin_email"){
     //     return res
     //     .status(404)
     //     .json({ message: "Invalid Credential" });
     // }
-    // if(user.email !=  "shubham@rittzdigital.com"){
-    //   return res
-    //   .status(404)
-    //   .json({ message: "Invalid Credential" });
-    // }
-    if(user.email !=  "gaundawdhesh9211@gmail.com"){
-      return res
-      .status(404)
-      .json({ message: "Invalid Credential" });
-    }
 
     // Check if OTP already exists and return remaining expiry time
     const existingOTP = await redisClient.get(`OTP-${email}`);
@@ -230,7 +229,7 @@ const loginEmailOTPVerify = async (req, res) => {
     // Set JWT token in HTTP-only cookie
     // res.cookie("auth_token", token, {
     //   httpOnly: true,
-    //   secure: true,//process.env.NODE_ENV === "production",
+    //   secure: false,//process.env.NODE_ENV === "production",
     //   sameSite: "Strict",
     //   maxAge: 60 * 60 * 1000 * 24 * 7, // 1 Week expiry
     //   path: "/"
@@ -239,9 +238,10 @@ const loginEmailOTPVerify = async (req, res) => {
     // Set JWT token in HTTPS-only cookie
     res.cookie("token", token, {
       httpOnly: true,  // Prevents client-side access
-      secure: false,   // Set false for HTTP (development)
-      sameSite: "lax", // Allows same-site requests
+      secure: true,   // Set false for HTTPS (development)
+      sameSite: "none", // Allows same-site requests
       maxAge: 24 * 60 * 60 * 1000 *7, // 7 day
+      path:"/"
     });
 
     res.status(200).json({success:true, message: "Login successful" });

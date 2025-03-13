@@ -1,19 +1,5 @@
 const Homepage = require("../../models/khwaahish/Homepage.js");
-// const { deleteFileByLocationFromS3 } = require("../../services/S3_Services.js");
-
-// Helper function to delete file from local storage
-const deleteLocalFile = (filePath) => {
-  try {
-    if (!filePath) return;
-    const fullPath = path.join(__dirname, "../../", filePath);
-    if (fs.existsSync(fullPath)) {
-      fs.unlinkSync(fullPath);
-      console.log(`File deleted: ${fullPath}`);
-    }
-  } catch (error) {
-    console.error("Error deleting file:", error);
-  }
-};
+const { deleteFileByLocationFromS3 } = require("../../services/S3_Services.js");
 
 // Main Homepage CRUD operations
 const getHomepage = async (req, res) => {
@@ -66,12 +52,10 @@ const updateGeneral=async(req,res)=>{
       if (req.files && req.files[field]) {
         // Delete old file if exists
         if (homepage[field]) {
-            //await deleteFileByLocationFromS3(homepage[field]);
-            deleteLocalFile(homepage[field]);
+            await deleteFileByLocationFromS3(homepage[field]);
         }
         // Save new file path
-        // updateData[field] = req.files[field][0].location.replace(/\\/g, '/');
-        updateData[field] = req.files[field][0].path.replace(/\\/g, '/');
+        updateData[field] = req.files[field][0].location.replace(/\\/g, '/');
       }
     }
 
@@ -117,14 +101,12 @@ const updateHallMark=async(req,res)=>{
     if (req.files && req.files['hallmark_images']) {
       // Delete old hallmark images if new ones are provided
       if (homepage.hallmark_images && homepage.hallmark_images.length > 0) {
-      homepage.hallmark_images.forEach(imagePath => {
-        //await deleteFileByLocationFromS3(imagePath);
-        deleteLocalFile(imagePath);
-      });
+        for (const imagePath of homepage.hallmark_images) {
+          await deleteFileByLocationFromS3(imagePath);
+        }
       }
       // Save new file paths
-      // updateData.hallmark_images = req.files['hallmark_images'].map(file => file.location.replace(/\\/g, '/'));
-      updateData.hallmark_images = req.files['hallmark_images'].map(file => file.path.replace(/\\/g, '/'));
+      updateData.hallmark_images = req.files['hallmark_images'].map(file => file.location.replace(/\\/g, '/'));
     }
 
   // Update homepage with the new data
@@ -182,8 +164,7 @@ const addHighJewelCarousal = async (req, res) => {
     if (!high_title || !high_short_desc || !high_slug_name || !high_slug) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
-    // const high_Image = req.file ? req.file.location.replace(/\\/g, '/') : null;
-    const high_Image = req.file ? req.file.path.replace(/\\/g, '/') : null;
+    const high_Image = req.file ? req.file.location.replace(/\\/g, '/') : null;
 
     let homepage = await Homepage.findOne({ homepage_name: "Khwaahish" });
     if (!homepage) {
@@ -226,8 +207,7 @@ const deleteHighJewelCarousal = async (req, res) => {
 
     const highJewel = homepage.high_jewel_list[highJewelIndex];
     if (highJewel.high_Image) {
-      // deleteFileByLocationFromS3(highJewel.high_Image);
-      deleteLocalFile(highJewel.high_Image);
+     await deleteFileByLocationFromS3(highJewel.high_Image);
     }
 
     homepage.high_jewel_list.splice(highJewelIndex, 1);
@@ -323,8 +303,7 @@ const deleteQOHCarousal = async (req, res) => {
 
     const QOH = homepage.qoh_section_list[QOHIndex];
     if (QOH.qohImage) {
-      // deleteFileByLocationFromS3(QOH.qohImage);
-      deleteLocalFile(QOH.qohImage);
+      await deleteFileByLocationFromS3(QOH.qohImage);
     }
 
     homepage.qoh_section_list.splice(QOH, 1);
@@ -392,12 +371,10 @@ const updateEditSection=async (req, res) => {
       if (req.files && req.files[field]) {
         // Delete old file if exists
         if (homepage[field]) {
-          // deleteFileByLocationFromS3(homepage[field]);
-          deleteLocalFile(homepage[field]);
+        await  deleteFileByLocationFromS3(homepage[field]);
         }
         // Save new file path
-        // updateData[field] = req.files[field][0].location.replace(/\\/g, '/');
-        updateData[field] = req.files[field][0].path.replace(/\\/g, '/');
+        updateData[field] = req.files[field][0].location.replace(/\\/g, '/');
       }
     }
 
@@ -499,8 +476,7 @@ const deletePromise = async (req, res) => {
 
     const promise = homepage.promise_list[promiseIndex];
     if (promise.promise_image) {
-      // deleteFileByLocationFromS3(promise.promise_image);
-      deleteLocalFile(promise.promise_image);
+    await  deleteFileByLocationFromS3(promise.promise_image);
     }
 
     homepage.promise_list.splice(promiseIndex, 1);
@@ -539,24 +515,20 @@ const updateComingSoon=async(req,res)=>{
     if (req.files && req.files['coming_soon_images']) {
       // Delete old hallmark images if new ones are provided
       if (homepage.coming_soon_images && homepage.coming_soon_images.length > 0) {
-      homepage.coming_soon_images.forEach(imagePath => {
-        // deleteFileByLocationFromS3(imagePath);
-        deleteLocalFile(imagePath);
-      });
+        for (const imagePath of homepage.coming_soon_images) {
+          await deleteFileByLocationFromS3(imagePath);
+        }
       }
       // Save new file paths
-      // updateData.coming_soon_images = req.files['coming_soon_images'].map(file => file.location.replace(/\\/g, '/'));
-      updateData.coming_soon_images = req.files['coming_soon_images'].map(file => file.path.replace(/\\/g, '/'));
+      updateData.coming_soon_images = req.files['coming_soon_images'].map(file => file.location.replace(/\\/g, '/'));
     }
     if (req.files && req.files['coming_soon_videCall_banner_image']) {
       // Delete old file if exists
       if (homepage['coming_soon_videCall_banner_image']) {
-        // deleteFileByLocationFromS3(homepage['coming_soon_videCall_banner_image']);
-        deleteLocalFile(homepage['coming_soon_videCall_banner_image']);
+      await  deleteFileByLocationFromS3(homepage['coming_soon_videCall_banner_image']);
       }
       // Save new file path
-      // updateData['coming_soon_videCall_banner_image'] = req.files['coming_soon_videCall_banner_image'][0].location.replace(/\\/g, '/');
-      updateData['coming_soon_videCall_banner_image'] = req.files['coming_soon_videCall_banner_image'][0].path.replace(/\\/g, '/');
+      updateData['coming_soon_videCall_banner_image'] = req.files['coming_soon_videCall_banner_image'][0].location.replace(/\\/g, '/');
     }
 
   // Update homepage with the new data
@@ -603,12 +575,10 @@ const updateStoreSection=async(req,res)=>{
     if (req.file) {
       // Delete old file if exists
       if (homepage['storeImage']) {
-        // deleteFileByLocationFromS3(homepage['storeImage']);
-        deleteLocalFile(homepage['storeImage']);
+      await  deleteFileByLocationFromS3(homepage['storeImage']);
       }
       // Save new file path
-      // updateData['storeImage'] = req.file.location.replace(/\\/g, '/');
-      updateData['storeImage'] = req.file.path.replace(/\\/g, '/');
+      updateData['storeImage'] = req.file.location.replace(/\\/g, '/');
     }
 
   // Update homepage with the new data

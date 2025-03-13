@@ -7,9 +7,9 @@ const { dbConnect } = require("./config/dbConnect");
 const userProfileRouter=require("./routes/user.profile.routes.js");
 const userRouter=require("./routes/user.auth.routes.js");
 const adminAuthRouter = require("./routes/admin.auth.routes.js");
-// const pressReleaseRoutes = require('./routes/pressRelease.routes');
-// const storeEshopRouter = require("./routes/store-eshop.routes.js")
-// const storeKhwRouter = require("./routes/store-khw.routes.js");
+const pressReleaseRoutes = require('./routes/pressRelease.routes');
+const storeEshopRouter = require("./routes/store-eshop.routes.js")
+const storeKhwRouter = require("./routes/store-khw.routes.js");
 
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
@@ -20,12 +20,10 @@ const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const User = require("./models/user.model");
-const path=require("path");
-const { sendOTPViaEmail } = require("./services/otpService.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-// const ALLOWED_ORIGINS = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : [];
+const ALLOWED_ORIGINS = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : [];
 
 // database and redis
 dbConnect().then().catch(err=>console.log(err));
@@ -34,8 +32,6 @@ dbConnect().then().catch(err=>console.log(err));
 // app.use(apiKeyMiddleware);
 app.use(express.json());
 app.use(cookieParser());
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
 
 // database
 dbConnect().then().catch(err=>console.log(err));
@@ -55,27 +51,22 @@ async function createAdmin(phone, email, password) {
     console.log(`Admin created with email: ${email} and phone: ${phone}`);
 }
 
-// sendOTPViaEmail().then(
-//     e=>console.log("sended")
-// ).catch()
 
 
 // Example usage
-// createAdmin("+911234567890", "example@rittzdigital.com","rittzdigital92").catch(err => console.log(err));
-// createAdmin("+917738941646", "anupsuresh216@gmail.com","anup_BOSS").catch(err => console.log(err));
-// createAdmin("+916393846949", "shubham@rittzdigital.com","shubham_BOSS").catch(err => console.log(err));
-// createAdmin("+918419968404", "gaundawdhesh9211@gmail.com","awdhesh_BOSS").catch(err => console.log(err));
+// createAdmin("actualadminPhone", "actualAdminEmail","DummyPass").catch(err => console.log(err));
+
 
 // USER AUTH API 
 app.use(cors({
-    origin:"*",
+    origin:["http://localhost:5173"],
     credentials:true
 }))
 app.use("/user/auth",userRouter);
 app.use("/user/profile/",userProfileRouter);
-// app.use('/api/press-releases', pressReleaseRoutes);
-// app.use('/store/eshop', storeEshopRouter);
-// app.use('/store/khw', storeKhwRouter);
+app.use('/api/press-releases', pressReleaseRoutes);
+app.use('/store/eshop', storeEshopRouter);
+app.use('/store/khw', storeKhwRouter);
 
 
 app.use("/admin/auth", adminAuthRouter);

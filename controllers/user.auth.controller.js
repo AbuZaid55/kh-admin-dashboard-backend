@@ -6,6 +6,7 @@ const redisClient = require("../config/redis");
 
 const generateOTP = require("../utils/otpGenerator"); // Use this for Fake OTP in Testing Mode
 const generateRandomPassword = require("../utils/generatePassKey.js");
+const { AssistantsKnowledgeInstance } = require("twilio/lib/rest/assistants/v1/assistant/assistantsKnowledge.js");
 
 /**
  * 📱 Register via Phone - Send OTP & Store in User Schema
@@ -57,10 +58,10 @@ const registerPhoneOTP = async (req, res) => {
     await redisClient.setEx(`OTP-${phone}`, otpExpiry, hashedOTP);
 
     // Send OTP to the user's phone number
-    // IN PRODUCTION: sendOTPViaSMS(phone, otp);
+    await sendOTPViaSMS(phone, otp);
 
     // Respond back with OTP sent success
-    res.status(202).json({ message: "OTP SENT SUCCESS", otp });
+    res.status(202).json({success:true, message: "OTP SENT SUCCESS" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -121,12 +122,21 @@ const registerPhoneOTPVerify = async (req, res) => {
     const token = generateToken(user);
 
     // Set JWT token in HTTP-only cookie
-    res.cookie("auth_token", token, {
-      httpOnly: true, // Prevent access from JavaScript
-      secure: process.env.NODE_ENV === "production", // HTTPS in production
-      sameSite: "Strict", // CSRF protection
-      maxAge: 60 * 60 * 1000, // 1 hour expiry
-      path: "/", 
+    // res.cookie("auth_token", token, {
+    //   httpOnly: true, // Prevent access from JavaScript
+    //   secure: process.env.NODE_ENV === "production", // HTTPS in production
+    //   sameSite: "Strict", // CSRF protection
+    //   maxAge: 60 * 60 * 1000, // 1 hour expiry
+    //   path: "/", 
+    // });
+
+     // Set JWT token in HTTPS-only cookie
+     res.cookie("auth_token", token, {
+      httpOnly: true,  // Prevents client-side access
+      secure: true,   // Set false for HTTPS (development)
+      sameSite: "none", // Allows same-site requests
+      maxAge: 24 * 60 * 60 * 1000 *7, // 7 day
+      path:"/"
     });
 
     // Respond with success message and passkey
@@ -180,9 +190,9 @@ const loginPhoneOTP = async (req, res) => {
     await redisClient.setEx(`OTP-${phone}`, otpExpiry, hashedOTP);
 
     // Send OTP to the user's phone number
-    // IN PRODUCTION: sendOTPViaSMS(phone, otp);
+    await sendOTPViaSMS(phone, otp);
 
-    res.status(202).json({ message: "OTP SENT SUCCESS", otp });
+    res.status(202).json({success:true, message: "OTP SENT SUCCESS" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -221,12 +231,21 @@ const loginPhoneOTPVerify = async (req, res) => {
     const token = generateToken(user);
 
     // Set JWT token in HTTP-only cookie
-    res.cookie("auth_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 1000 * 24 * 7, // 1 Week expiry
-      path: "/"
+    // res.cookie("auth_token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "Strict",
+    //   maxAge: 60 * 60 * 1000 * 24 * 7, // 1 Week expiry
+    //   path: "/"
+    // });
+
+     // Set JWT token in HTTPS-only cookie
+     res.cookie("auth_token", token, {
+      httpOnly: true,  // Prevents client-side access
+      secure: true,   // Set false for HTTPS (development)
+      sameSite: "none", // Allows same-site requests
+      maxAge: 24 * 60 * 60 * 1000 *7, // 7 day
+      path:"/"
     });
 
     res.status(200).json({success:true, message: "Login successful" });
@@ -263,16 +282,25 @@ const loginPhonePasskey = async (req, res) => {
     // Generate JWT token
     const token = generateToken(user);
 
-    // Set JWT token in HTTP-only cookie
-    res.cookie("auth_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 1000 * 24 * 7, // 1 Week expiry
-      path: "/",
+    // // Set JWT token in HTTP-only cookie
+    // res.cookie("auth_token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "Strict",
+    //   maxAge: 60 * 60 * 1000 * 24 * 7, // 1 Week expiry
+    //   path: "/",
+    // });
+
+     // Set JWT token in HTTPS-only cookie
+     res.cookie("token", token, {
+      httpOnly: true,  // Prevents client-side access
+      secure: true,   // Set false for HTTPS (development)
+      sameSite: "none", // Allows same-site requests
+      maxAge: 24 * 60 * 60 * 1000 *7, // 7 day
+      path:"/"
     });
 
-    res.status(200).json({ message: "Login successful" });
+    res.status(200).json({success:true, message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -319,9 +347,9 @@ const loginEmailOTP = async (req, res) => {
     await redisClient.setEx(`OTP-${email}`, otpExpiry, hashedOTP);
 
     // Send OTP to the user's phone number
-    // IN PRODUCTION: sendOTPViaSMS(phone, otp);
+    await sendOTPViaSMS(phone, otp);
 
-    res.status(202).json({ message: "OTP SENT SUCCESS", otp });
+    res.status(202).json({success:true, message: "OTP SENT SUCCESS" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

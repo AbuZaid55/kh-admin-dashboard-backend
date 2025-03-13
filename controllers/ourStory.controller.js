@@ -1,29 +1,13 @@
 const OurStory = require("../models/ourStory.js");
 const path = require("path");
 const fs = require("fs");
-// const { deleteFileByLocationFromS3 } = require("../services/S3_Services.js");
-
-// Helper function to delete file from local storage
-const deleteLocalFile = (filePath) => {
-  try {
-    if (!filePath) return;
-    const fullPath = path.join(__dirname, "../", filePath);
-    if (fs.existsSync(fullPath)) {
-      fs.unlinkSync(fullPath);
-      console.log(`File deleted: ${fullPath}`);
-    }
-  } catch (error) {
-    console.error("Error deleting file:", error);
-  }
-};
+const { deleteFileByLocationFromS3 } = require("../services/S3_Services.js");
 
 
 // ourstory
 // Desire Section
 exports.getOurStory = async (req, res) => {
      try{
-        console.log("Jjjh");
-        
         let ourStory = await OurStory.findOne({ page:"Our Story" });
         if (!ourStory) {
             ourStory = new OurStory({ page:"Our Story" });
@@ -87,15 +71,12 @@ exports.toggleOurStory = async (req, res) => {
 // Desire Section
 exports.updateOurDesire = async (req, res) => {
     try {
-        console.log(req.body); // This should now contain your form fields
-        console.log(req.file);  // This should contain your file information
         
         const { desire_title ,desire_descriptions} = req.body;
         
         let desire_image;
         if (req.file) {
-            // desire_image = req.file.location;
-            desire_image = req.file.path;
+            desire_image = req.file.location;
         }
         
         if(!desire_title || desire_descriptions.length === 0){
@@ -110,18 +91,14 @@ exports.updateOurDesire = async (req, res) => {
         }
 
         if (desire_image && ourStory.desire_image) {
-            // await deleteFileByLocationFromS3(ourStory.desire_image);
-            deleteLocalFile(ourStory.desire_image);
-
+            await deleteFileByLocationFromS3(ourStory.desire_image);
         }
 
         if(desire_image) ourStory.desire_title = desire_title;
         if(desire_descriptions)ourStory.desire_descriptions =desire_descriptions;
         if(desire_image)ourStory.desire_image = desire_image;
 
-        await ourStory.save();
-        console.log(ourStory);
-        
+        await ourStory.save();    
 
         res.status(200).json({ success: true, data: ourStory });
     } catch (error) {
@@ -177,8 +154,7 @@ exports.updateOurLogo = async (req, res) => {
         let logo_img;
 
         if (req.file) {
-            // logo_img = req.file.location;
-            logo_img = req.file.path;
+            logo_img = req.file.location;
         }
 
         let ourStory = await OurStory.findOne({ page: "Our Story" });
@@ -188,8 +164,7 @@ exports.updateOurLogo = async (req, res) => {
         }
 
         if (logo_img && ourStory.logo_img) {
-            // await deleteFileByLocationFromS3(ourStory.logo_img)
-            deleteLocalFile(ourStory.logo_img);
+            await deleteFileByLocationFromS3(ourStory.logo_img)
         }
 
         if (logo_title !== undefined) ourStory.logo_title = logo_title;
@@ -297,8 +272,6 @@ exports.addpromoter=async(req,res)=>{
     designation,//file URL 
     feedback}= req.body;
 
-    console.log(req.body);
-
     
 
     if(!name || !designation || !feedback){
@@ -307,8 +280,7 @@ exports.addpromoter=async(req,res)=>{
 
     let profileImg;
     if(req.file){
-        // profileImg=req.file.location;
-        profileImg=req.file.path;
+        profileImg=req.file.location;
     }
     
 
@@ -351,7 +323,7 @@ exports.deletepromoter=async(req,res)=>{
             await ourStory.save();
         }
         deletePromoterObj = ourStory.promoters_list.filter(feat => feat._id.toString() == id);
-        deleteLocalFile(deletePromoterObj[0].profileImg);
+        deleteFileByLocationFromS3(deletePromoterObj[0].profileImg);
         ourStory.promoters_list = ourStory.promoters_list.filter(feat => feat._id.toString() !== id);
         
         await ourStory.save();

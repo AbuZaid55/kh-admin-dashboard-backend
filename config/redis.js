@@ -23,10 +23,10 @@ redisClient.connect()
 module.exports = redisClient;
 
 // Test setting and getting a value
-redisClient.set('foo', 'bar')
-    .then(() => console.log('Value set'))
-    .catch(err => console.log('Redis Set Error', err));
+// redisClient.set('foo', 'bar')
+//     .then(() => console.log('Value set'))
+//     .catch(err => console.log('Redis Set Error', err));
 
-redisClient.get('foo')
-    .then(value => console.log('Value:', value))
-    .catch(err => console.log('Redis Get Error', err));
+// redisClient.get('foo')
+//     .then(value => console.log('Value:', value))
+//     .catch(err => console.log('Redis Get Error', err));
