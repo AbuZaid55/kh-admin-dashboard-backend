@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const diamondSchema_eshop = new mongoose.Schema({
-    grade: { type: String, required: true },
-    variant: { type: String, required: true },
+    grade: { type: String, required: true,trim:true },
+    variant: { type: String, required: true,trim:true },
     priceRanges: [
       {
         minCts: { type: Number, required: true },

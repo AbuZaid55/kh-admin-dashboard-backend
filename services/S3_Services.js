@@ -3,9 +3,9 @@ const multer = require("multer");
 const multerS3 = require("multer-s3");
 const s3 = require("../config/S3");
 
-const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || '';
 
-const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif"];
+const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif" ];
 
 const uploads = multer({
   storage: multerS3({
@@ -22,7 +22,7 @@ const uploads = multer({
     if (allowedImageTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Only JPG, JPEG, PNG, and WEBP images are allowed"), false);
+      cb(new Error("Only JPG, JPEG, PNG, WEBP and XLXS are allowed"), false);
     }
   },
 });
@@ -40,7 +40,7 @@ const uploadFilesOnS3 = async (req, res, next) => {
     { name: "images3"}, 
     { name: "images"}, 
     { name: "image"}, 
-    { name: "nav_image"}, 
+    { name: "nav_image"},   
   ])(req, res, (err) => {
     if (err) {
       if (err instanceof multer.MulterError) {
@@ -67,7 +67,7 @@ const uploadFilesOnS3 = async (req, res, next) => {
     req.imageUrls = imageUrls;
     req.imageUrl = imageUrl ? imageUrl[0] : null;
     req.navImageUrl = navImageUrl ? navImageUrl[0] : null;
-
+    
     next();
   });
 };
@@ -97,6 +97,7 @@ const deleteFileByLocationFromS3 = async (fileUrl) => {
 
 
 const deleteFileFromS3 = async (fileKey) => {
+  if(!fileKey) return;
   const params = {
     Bucket: AWS_S3_BUCKET_NAME,
     Key: fileKey,

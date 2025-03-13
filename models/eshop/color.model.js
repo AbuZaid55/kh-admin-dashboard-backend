@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const colorSchema_eshop = new mongoose.Schema({
-  name: { type: String, required: true, unique:true },
+  name: { type: String, required: true, unique:true ,trim:true},
   color_code: { type: String, required: true },
 });
 

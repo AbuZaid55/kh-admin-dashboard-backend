@@ -2,9 +2,11 @@ const {
     landingPageUpdate,
     addPromise,
     deletePromise,
-    getLandingpage
+    getLandingpage,
+    toggleSection
 } =require("../controllers/eshop/landingpage.controller.js");
 const express = require("express");
+const { uploads, uploadSingle } = require("../services/S3_Services.js");
 const { uploads, uploadSingle } = require("../services/S3_Services.js");
 const { uploads } = require("../services/S3_Services.js");
 const { createTestimonial, getTestimonials, updateTestimonial, deleteTestimonial } = require("../controllers/eshop/testimonial.controller.js");
@@ -24,6 +26,7 @@ router.put("/landing-page", uploads.fields([
     { name: "curator_img" },
 ]), landingPageUpdate);
 
+router.put("/toggle-section",toggleSection);
 router.post('/landing-page/promises', uploads.single('image'), addPromise);
 router.delete('/landing-page/promises/:id', deletePromise);
 

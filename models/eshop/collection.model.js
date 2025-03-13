@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const collectionSchema_eshop = new mongoose.Schema({
-    name:{type:String,required:true},
+    name:{type:String,required:true,trim:true},
     tagline:{type:String},
     description:{type:String},
     image:{key:String,url:String},

@@ -1,32 +1,33 @@
-require('dotenv').config();  // Load environment variables from .env file
+require('dotenv').config();
 const { createClient } = require('redis');
 
-// Create Redis client using environment variables
-const redisClient = createClient({
-    username: process.env.REDIS_USERNAME || undefined,  // Undefined if not set
-    password: process.env.REDIS_PASSWORD || undefined,
-    socket: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : 6379
-    }
-});
+const redisHost = process.env.REDIS_HOST || null;
+const redisPort = process.env.REDIS_PORT ? Number(process.env.REDIS_PORT) : null;
+const redisUser = process.env.REDIS_USERNAME || null;
+const redisPass = process.env.REDIS_PASSWORD || null;
 
-// Error handling
-redisClient.on('error', err => console.log('Redis Client Error', err));
+let redisClient = null;
 
-// Connect to Redis
-redisClient.connect()
-    .then(() => console.log('Connected to Redis'))
-    .catch(err => console.log('Redis Connection Error', err));
+if (redisHost && redisPort) {
+    redisClient = createClient({
+        username: redisUser,
+        password: redisPass,
+        socket: {
+            host: redisHost,
+            port: redisPort
+        }
+    });
 
-// Export the client for use in other parts of your app
+    redisClient.on('error', err => console.error('Redis Client Error:', err));
+
+    redisClient.connect()
+        .then(() => console.log('✅ Connected to Redis'))
+        .catch(err => {
+            console.error('❌ Redis Connection Failed:', err);
+            redisClient = null;  // Prevent using an invalid client
+        });
+} else {
+    console.log('⚠️ Redis is not configured. Skipping Redis connection.');
+}
+
 module.exports = redisClient;
-
-// Test setting and getting a value
-redisClient.set('foo', 'bar')
-    .then(() => console.log('Value set'))
-    .catch(err => console.log('Redis Set Error', err));
-
-redisClient.get('foo')
-    .then(value => console.log('Value:', value))
-    .catch(err => console.log('Redis Get Error', err));
