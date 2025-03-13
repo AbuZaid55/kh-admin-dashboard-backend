@@ -25,6 +25,9 @@ const ProductSchema_eshop = new mongoose.Schema(
     diamond_discount: { type: mongoose.Schema.Types.ObjectId, ref: "Discount_eshop" },
     gold_discount: { type: mongoose.Schema.Types.ObjectId, ref: "Discount_eshop" },
     discount_on_total: { type: mongoose.Schema.Types.ObjectId, ref: "Discount_eshop" },
+    
+    orders: { type: Number, default:0 },
+    views: { type: Number, default:0 },
 
     golds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gold_eshop", required: true }],
     diamonds: [

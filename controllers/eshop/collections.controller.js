@@ -30,6 +30,17 @@ const getAllCollections = async(req,res)=>{
     }
 }
 
+const getCollectionByName = async(req,res)=>{
+    try {
+      const name = req?.params?.name;
+      if(!name) throw new Error("Name not found")
+      const data = await Collection_eshop.findOne({name:{ $regex: new RegExp(`^${name}$`, "i") }})
+      res.status(200).json(data)
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
 const updateCollection = async(req,res)=>{
     const image = req?.imageUrl
     try {
@@ -72,4 +83,4 @@ const deleteCollection = async(req,res)=>{
     }
 }
 
-module.exports = {addCollection,getAllCollections,updateCollection,deleteCollection}
+module.exports = {addCollection,getAllCollections,getCollectionByName,updateCollection,deleteCollection}

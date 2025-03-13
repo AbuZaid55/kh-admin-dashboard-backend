@@ -47,7 +47,7 @@ const bulkUploadXlsx = async (req, res) => {
 
       //Check if Product Already Exists
       const existingProduct = await Product.findOne({
-        $or: [{ sku: item.SKU }, { name: item.Name }],
+        $or: [{ sku: item.SKU }, { name:  { $regex: new RegExp(`^${item?.Name.trim()}`, 'i') } }],
       });      
       if (existingProduct) {
         continue;
@@ -57,7 +57,7 @@ const bulkUploadXlsx = async (req, res) => {
       if (item["Style"]) {
         const style = item["Style"].trim();
 
-        let existingStyle = await Style.findOne({ name: style });
+        let existingStyle = await Style.findOne({ name:  { $regex: new RegExp(`^${style}$`, 'i') } });
         if (existingStyle) {
           styleId = existingStyle._id;
         } else {
@@ -72,7 +72,7 @@ const bulkUploadXlsx = async (req, res) => {
       // Handle Category
       if (item["Category"]) {
         const categoryName = item["Category"].trim();
-        let existingCategory = await Category.findOne({ name: categoryName });
+        let existingCategory = await Category.findOne({ name:  { $regex: new RegExp(`^${categoryName}$`, 'i') } });
 
         if (existingCategory) {
           const existingStyleIds = existingCategory.styles.map((id) => id.toString());
@@ -98,7 +98,7 @@ const bulkUploadXlsx = async (req, res) => {
       if (item["Collection"]) {
         const collectionName = item["Collection"].trim();
         let existingCollection = await Collection.findOne({
-          name: collectionName,
+          name:  { $regex: new RegExp(`^${collectionName}$`, 'i') },
         });
 
         if (existingCollection) {
@@ -119,7 +119,7 @@ const bulkUploadXlsx = async (req, res) => {
       // Handle Colors
       if (item["Color1"]) {
         const colorName = item["Color1"].trim();
-        const existColor = await Color.findOne({ name: colorName });
+        const existColor = await Color.findOne({ name:  { $regex: new RegExp(`^${colorName}$`, 'i') } });
         if (existColor) {
           color1Id = existColor._id;
         } else {
@@ -133,7 +133,7 @@ const bulkUploadXlsx = async (req, res) => {
 
       if (item["Color2"]) {
         const colorName = item["Color2"].trim();
-        const existColor = await Color.findOne({ name: colorName });
+        const existColor = await Color.findOne({ name:  { $regex: new RegExp(`^${colorName}$`, 'i') } });
         if (existColor) {
           color2Id = existColor._id;
         } else {
@@ -147,7 +147,7 @@ const bulkUploadXlsx = async (req, res) => {
 
       if (item["Color3"]) {
         const colorName = item["Color3"].trim();
-        const existColor = await Color.findOne({ name: colorName });
+        const existColor = await Color.findOne({ name:  { $regex: new RegExp(`^${colorName}$`, 'i') } });
         if (existColor) {
           color3Id = existColor._id;
         } else {
@@ -190,7 +190,7 @@ const bulkUploadXlsx = async (req, res) => {
       }
       if (item.goldArray) {
         for (let gold of item.goldArray) {
-          let existingGold = await Gold.findOne({ carat: gold.carat });
+          let existingGold = await Gold.findOne({ carat:  { $regex: new RegExp(`^${gold?.carat.trim()}$`, 'i') } });
           if (existingGold) {
             goldIds.push(existingGold._id);
           } else {
@@ -214,7 +214,7 @@ const bulkUploadXlsx = async (req, res) => {
         for (let shape of diamondShapes) {
           for (let grade of item.grade) {
             let existingDiamond = await Diamond.findOne({
-              grade: grade.trim(),
+              grade:  { $regex: new RegExp(`^${grade.trim()}$`, 'i') },
               variant: { $regex: new RegExp(`\\b${shape}\\b`, "i") },
             });
 
@@ -248,7 +248,7 @@ const bulkUploadXlsx = async (req, res) => {
       let laborId = null;
       if (item["gold_labor_types"]) {
         let existingLabor = await Labor.findOne({
-          type: item["gold_labor_types"],
+          type:  { $regex: new RegExp(`^${item["gold_labor_types"].trim()}$`, 'i') },
         });
         if (existingLabor) {
           laborId = existingLabor._id;
@@ -267,7 +267,7 @@ const bulkUploadXlsx = async (req, res) => {
         const recommendedForList = item["recommended_for"].split("|");
         for (let recommendName of recommendedForList) {
           let existingRecommend = await RecommendedFor.findOne({
-            name: recommendName.trim(),
+            name:  { $regex: new RegExp(`^${recommendName.trim()}$`, 'i') }
           });
           if (existingRecommend) {
             recommendedForIds.push(existingRecommend._id);
@@ -312,13 +312,13 @@ const bulkUploadXlsx = async (req, res) => {
         recommendedFor: recommendedForIds,
       };
 
-      // productList.push(productData)
+      productList.push(productData)
       count = count+1
 
       console.log(count," Product Inserted")
 
-      await Product(productData).save()
     }
+    await Product.insertMany(productList)
     console.log("All Data Imported Successfully.");
     res.status(200).json({ message: "Inserted Successfully" });
   } catch (err) {

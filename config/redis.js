@@ -17,7 +17,7 @@ if (redisHost && redisPort) {
             port: redisPort
         }
     });
-
+ 
     redisClient.on('error', err => console.error('Redis Client Error:', err));
 
     redisClient.connect()

@@ -4,7 +4,7 @@ const { uploadFilesOnS3 } = require("../services/S3_Services");
 
 const upload = require("../middlewares/multerMiddleware");
 
-const { addCollection, getAllCollections, updateCollection, deleteCollection } = require("../controllers/eshop/collections.controller")
+const { addCollection, getAllCollections, updateCollection, deleteCollection, getCollectionByName } = require("../controllers/eshop/collections.controller")
 const { addCategory, getAllCategories, getStyles, updateCategory, deleteCategory, getCategoryByName } = require("../controllers/eshop/category.controller")
 const { addStyle, getAllStyles, updateStyle, deleteStyle } = require("../controllers/eshop/style.controller")
 const { addColor, getColors, updateColor, deleteColor } = require("../controllers/eshop/color.controller")
@@ -25,6 +25,7 @@ const router = express.Router()
 
 router.post("/collections/add-collection",uploadFilesOnS3,addCollection) 
 router.get("/collections/get-all-collections",getAllCollections)
+router.get("/collections/get-collection-by-name/:name",getCollectionByName)
 router.put("/collections/update-collection/:id",uploadFilesOnS3,updateCollection)
 router.delete("/collections/delete-collection/:id",deleteCollection)
 
