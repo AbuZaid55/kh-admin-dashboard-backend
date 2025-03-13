@@ -10,8 +10,6 @@ const adminAuthRouter = require("./routes/admin.auth.routes.js");
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
 const storeEshopRouter = require("./routes/store-eshop.routes.js")
 
-const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
-const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
 const storeKhwRouter = require("./routes/store-khw.routes.js");
 
