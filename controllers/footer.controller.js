@@ -127,7 +127,7 @@ exports.updateFooter =async (req, res) => {
         if(domainExists.available_payment_methods){
             deleteFileByLocationFromS3(domainExists.available_payment_methods)
         }
-        req.body.available_payment_methods = req.file.path;
+        req.body.available_payment_methods = req.file.location;
     }
     
     footer = await Footer.findByIdAndUpdate(req.params.id, req.body, {

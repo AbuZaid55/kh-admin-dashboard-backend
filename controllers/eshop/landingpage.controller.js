@@ -63,7 +63,7 @@ const landingPageUpdate=async (req, res) => {
         for (const field of fileFields) {
             if (req.files[field]) {
             if (page[field]) {
-                deleteFileByLocationFromS3(page[field]);
+              await deleteFileByLocationFromS3(page[field]);
             }
             updateData[field] = req.files[field][0].location;
             }
@@ -91,7 +91,8 @@ const addPromise = async (req, res) => {
       
       let promise = {};
       if(description) promise.description=description;
-      const image = req.file ? req.file.location : '';
+      // const image = req.file ? req.file.location : '';
+      const image = req.file ? req.file.path : '';
       if(image) promise.image=image;
       const landingPage = await LandingPage.findOne({ eshop_name: "Gulz" });
       landingPage.promises_list.push(promise);
@@ -113,7 +114,7 @@ const deletePromise = async (req, res) => {
         return res.status(404).json({ message: 'Promise not found' });
     }
     if(promise.image){
-        deleteFileByLocationFromS3(promise.image);
+      await  deleteFileByLocationFromS3(promise.image);
     }
     landingPage.promises_list = landingPage.promises_list.filter(p => p.id !== id);
     await landingPage.save();
@@ -185,7 +186,7 @@ const toggleSection = async (req, res) => {
       res.status(200).json({ 
         success: true, 
         message: `Section ${section} visibility updated successfully`,
-        value: updated[section]
+        data: updated
       });
     } catch (error) {
       console.error("Error toggling section visibility:", error);
