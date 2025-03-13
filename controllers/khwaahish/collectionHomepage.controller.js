@@ -71,7 +71,6 @@ exports.updateGeneral = async (req, res) => {
 
 exports.updateCollection = async (req, res) => {
     try {
-
         
         const { collection_homepage_name, collection_data_section_title, collection_data_title, collection_data_desc } = req.body;
         if (!allowedCollectionHomepage.includes(collection_homepage_name)) {

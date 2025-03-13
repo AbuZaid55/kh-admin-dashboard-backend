@@ -3,7 +3,7 @@ const { deleteFileFromS3 } = require("../../services/S3_Services");
 
 const ProductSchema_eshop = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true,trim:true },
     sku: { type: String, unique: true, required: true },
     description: { type: String },
     stock: { type: Number, default: 0 },
@@ -37,10 +37,10 @@ const ProductSchema_eshop = new mongoose.Schema(
     ],
 
     // Gemstone Details (if applicable)
-    gemstone_name: { type: String },
+    gemstone_name: { type: String ,trim:true},
     gemstone_price: { type: Number, default: 0 },
     gemstone_weight: { type: Number, default: 0 },
-    gemstone_type: { type: String },
+    gemstone_type: { type: String ,trim:true},
 
     // Other Costs
     labor: { type: mongoose.Schema.Types.ObjectId, ref: "Labor_eshop" },

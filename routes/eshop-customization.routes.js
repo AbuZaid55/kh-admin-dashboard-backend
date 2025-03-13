@@ -6,7 +6,7 @@ const {
     toggleSection
 } =require("../controllers/eshop/landingpage.controller.js");
 const express = require("express");
-const { uploads } = require("../services/S3_Services.js");
+const { uploads, uploadSingle } = require("../services/S3_Services.js");
 const { createTestimonial, getTestimonials, updateTestimonial, deleteTestimonial } = require("../controllers/eshop/testimonial.controller.js");
 const { createBenefit, getBenefits, updateBenefit, deleteBenefit } = require("../controllers/eshop/eshopBenefits.controller.js");
 const router = express.Router();

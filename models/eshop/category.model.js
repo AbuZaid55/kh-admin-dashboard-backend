@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const CategorySchema_eshop = new mongoose.Schema({
-  name: { type: String, required: true},
+  name: { type: String, required: true,trim:true},
   image:{key:String,url:String},
   description:{type:String},
   styles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Style_eshop" }],

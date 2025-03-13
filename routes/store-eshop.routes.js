@@ -2,18 +2,23 @@ const express = require("express")
 
 const { uploadFilesOnS3 } = require("../services/S3_Services");
 
+const upload = require("../middlewares/multerMiddleware");
+
 const { addCollection, getAllCollections, updateCollection, deleteCollection } = require("../controllers/eshop/collections.controller")
-const { addCategory, getAllCategories, getStyles, updateCategory, deleteCategory } = require("../controllers/eshop/category.controller")
+const { addCategory, getAllCategories, getStyles, updateCategory, deleteCategory, getCategoryByName } = require("../controllers/eshop/category.controller")
 const { addStyle, getAllStyles, updateStyle, deleteStyle } = require("../controllers/eshop/style.controller")
 const { addColor, getColors, updateColor, deleteColor } = require("../controllers/eshop/color.controller")
-const { addProduct, getProducts, searchProducts, getProductById, getProductForUpdate, updateProduct, deleteProduct, getProductsForDiscount } = require("../controllers/eshop/product.controller")
+const { addProduct, getProducts, searchProducts, getProductById, getProductForUpdate, updateProduct, deleteProduct, getProductsForDiscount, getProductByName } = require("../controllers/eshop/product.controller")
 const { applyDiscount, getAllDiscounts, updateDiscount, deleteDiscount } = require("../controllers/eshop/discount.controller")
 const { addGold, getGolds, updateGold, deleteGold } = require("../controllers/eshop/gold.controller")
 const { addDiamond, getDiamonds, updateDiamond, deleteDiamond } = require("../controllers/eshop/diamond.controller")
 const { addLabor, getLabors, updateLabor, deleteLabor } = require("../controllers/eshop/labor.controller")
 const {addMakingCharge,getMakingCharges, updateMakingCharge, deleteMakingCharge} = require("../controllers/eshop/making_charge.controller")
 const {addWastageCharge,getWastageCharge, updateWastageCharge, deleteWastageCharge} = require("../controllers/eshop/wastage_charge.controller")
-const { addRecommended, getRecommended, updateRecommended, deleteRecommended } = require("../controllers/eshop/recommended.controller")
+const { addRecommended, getRecommended, updateRecommended, deleteRecommended } = require("../controllers/eshop/recommended.controller");
+const { bulkUploadXlsx } = require("../controllers/eshop/bulkupload.controller");
+const { getImageUrls } = require("../controllers/eshop/getImage.controller");
+
 
 
 
@@ -26,6 +31,7 @@ router.delete("/collections/delete-collection/:id",deleteCollection)
 
 router.post("/categories/add-category",uploadFilesOnS3,addCategory)
 router.get("/categories/get-all-categories",getAllCategories)
+router.get("/categories/get-category-by-name/:name",getCategoryByName)
 router.get("/categories/:id/styles",getStyles)
 router.put("/categories/update-category/:id",uploadFilesOnS3,updateCategory)
 router.delete("/categories/delete-category/:id",deleteCategory)
@@ -70,10 +76,13 @@ router.get("/discounts/get-all-discounts",getAllDiscounts)
 router.put("/discounts/update-discount/:id",updateDiscount)
 router.delete("/discounts/delete-discount/:id",deleteDiscount)
 
+router.post("/products/bulk-upload", upload.single("file"), bulkUploadXlsx);
+
 router.post("/products/add-product",uploadFilesOnS3,addProduct)
 router.post("/products/get-products",getProducts)
 router.post("/products/get-products-for-discount",getProductsForDiscount)
 router.get("/products/get-product/:id",getProductById)
+router.get("/products/get-product-by-name/:name",getProductByName)
 router.get("/products/get-product-for-update/:id",getProductForUpdate)
 router.put("/products/update-product/:id",uploadFilesOnS3,updateProduct)
 router.delete("/products/delete-product/:id",deleteProduct)
@@ -83,6 +92,8 @@ router.post("/recommended/add-recommended",uploadFilesOnS3,addRecommended)
 router.get("/recommended/get-all-recommended",getRecommended)
 router.put("/recommended/update-recommended/:id",uploadFilesOnS3,updateRecommended)
 router.delete("/recommended/delete-recommended/:id",deleteRecommended)
+
+router.post("/get-image-urls",uploadFilesOnS3,getImageUrls)
 
 
 module.exports = router;

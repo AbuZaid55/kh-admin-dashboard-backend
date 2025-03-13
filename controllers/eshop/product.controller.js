@@ -70,7 +70,7 @@ const getProducts = async (req, res) => {
     const categories = await Category_eshop.find({ _id: { $in: uniqueCategories } }).select("name");
     const styles = await Style_eshop.find({ _id: { $in: uniqueStyles } }).select("name");
 
-    const data = await Product_eshop.find(filter).populate(["diamond_discount", "gold_discount", "discount_on_total", "labor", "diamonds.diamond", {
+    const data = await Product_eshop.find(filter).populate(["diamond_discount","color1","color2","color3", "gold_discount", "discount_on_total", "labor", "diamonds.diamond", {
       path: "golds",
       populate: [
         { path: "making_charge" },
@@ -120,6 +120,22 @@ const getProductById = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+const getProductByName = async(req,res)=>{
+  try {
+    const name = req?.params?.name 
+    const data = await Product_eshop.findOne({name:{ $regex: new RegExp(`^${name}$`, "i") }}).populate(["collection","category","style","diamond_discount","color1","color2","color3", "gold_discount", "discount_on_total", "labor", "diamonds.diamond","recommendedFor", {
+      path: "golds",
+      populate: [
+        { path: "making_charge" },
+        { path: "wastage_charge" }
+      ]
+    },])
+    res.status(200).json(data)
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
 
 const getProductForUpdate = async (req, res) => {
   try {
@@ -246,4 +262,4 @@ const searchProducts = async (req, res) => {
   }
 };
 
-module.exports = { addProduct, getProducts,getProductsForDiscount, getProductById, getProductForUpdate, updateProduct, deleteProduct, searchProducts };
+module.exports = { addProduct, getProducts,getProductsForDiscount, getProductById,getProductByName, getProductForUpdate, updateProduct, deleteProduct, searchProducts };
