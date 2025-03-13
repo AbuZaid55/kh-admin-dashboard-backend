@@ -97,7 +97,6 @@ app.use("/admin/auth", adminAuthRouter);
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
 app.use("/admin/auth", adminAuthRouter);
-app.use("/api/testimonials", testimonialRoutes);
 
 // Customization khwaahish 
 app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);
