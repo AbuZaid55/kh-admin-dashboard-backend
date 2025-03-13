@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   getHomepage,
   updateHomepage
-} = require("../controllers/khwahish/maw_homepage.controller");
+} = require("../controllers/khwaahish/maw_homepage.controller.js");
 const { uploads } = require("../services/S3_Services.js");
 
 // Get homepage data

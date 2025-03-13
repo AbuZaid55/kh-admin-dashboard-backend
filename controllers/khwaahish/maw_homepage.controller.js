@@ -4,7 +4,7 @@ const util = require("util");
 
 const { deleteFileByLocationFromS3 } = require("../../services/S3_Services.js");
 
-const Homepage = require("../../models/khwahish/maw_homepage.model.js");
+const Homepage = require("../../models/khwaahish/maw_homepage.model.js");
 
 /**
  * Get homepage data

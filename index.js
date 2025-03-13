@@ -17,9 +17,6 @@ const maw_homepageCustomizationRouter = require("./routes/maw_homepage-customiza
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 
 
-const storeKhwRouter = require("./routes/store-khw.routes.js");
-
-
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
 const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
