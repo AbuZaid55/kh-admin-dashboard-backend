@@ -230,24 +230,26 @@ const getProductByName = async (req, res) => {
   }
   try {
     const name = req?.params?.name;
-    const product = await Product_eshop.findOne({ name: { $regex: new RegExp(`^${name}$`, "i") } }).populate([
-      "collection",
-      "category",
-      "style",
-      "diamond_discount",
-      "color1",
-      "color2",
-      "color3",
-      "gold_discount",
-      "discount_on_total",
-      "labor",
-      "diamonds.diamond",
-      "recommendedFor",
-      {
-        path: "golds",
-        populate: [{ path: "making_charge" }, { path: "wastage_charge" }],
-      },
-    ]).lean();
+    const product = await Product_eshop.findOne({ name: { $regex: new RegExp(`^${name}$`, "i") } })
+      .populate([
+        "collection",
+        "category",
+        "style",
+        "diamond_discount",
+        "color1",
+        "color2",
+        "color3",
+        "gold_discount",
+        "discount_on_total",
+        "labor",
+        "diamonds.diamond",
+        "recommendedFor",
+        {
+          path: "golds",
+          populate: [{ path: "making_charge" }, { path: "wastage_charge" }],
+        },
+      ])
+      .lean();
     if (product?._id) {
       if (bestSellersProducts.includes(product._id.toString())) {
         product.best_seller = true;
@@ -269,6 +271,8 @@ const getProductByName = async (req, res) => {
         product.new_arrival = false;
       }
     }
+    product.views = product.views + 1;
+    await product.save();
     res.status(200).json(product);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -381,19 +385,36 @@ const deleteProduct = async (req, res) => {
 
 const searchProducts = async (req, res) => {
   try {
-    const { collectionName, categoryName, styleName } = req.body;
+    if (!string) {
+      return res.status(400).json({ error: "Search string is required." });
+    }
 
-    const collection = collectionName ? await Collection_eshop.findOne({ name: collectionName }).select("_id") : "";
-    const category = categoryName ? await Category_eshop.findOne({ name: categoryName }).select("_id") : "";
-    const style = styleName ? await Style_eshop.findOne({ name: styleName }).select("_id") : "";
+    const data = await Product_eshop.find({
+      $or: [
+        { name: { $regex: string, $options: "i" } }, 
+        { sku: { $regex: string, $options: "i" } }, 
+        { description: { $regex: string, $options: "i" } }, 
+        { gemstone_name: { $regex: string, $options: "i" } }
+      ],
+    }).populate([
+      "diamond_discount",
+      "color1",
+      "color2",
+      "color3",
+      "gold_discount",
+      "discount_on_total",
+      "labor",
+      "diamonds.diamond",
+      {
+        path: "golds",
+        populate: [{ path: "making_charge" }, { path: "wastage_charge" }],
+      },
+      {
+        path: "recommendedFor",
+        select: "name",
+      },
+    ]);
 
-    let filter = {};
-
-    if (collection) filter.collection = collection._id;
-    if (category) filter.category = category._id;
-    if (style) filter.style = style._id;
-
-    const data = await Product_eshop.find(filter);
     res.status(200).json(data);
   } catch (error) {
     res.status(400).json({ error: error.message });
