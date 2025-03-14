@@ -128,23 +128,14 @@ const getProducts = async (req, res) => {
       .lean();
 
     let newData = data.map((product) => {
-      if (bestSellersProducts.includes(product._id.toString())) {
-        product.best_seller = true;
-      } else {
-        product.best_seller = false;
-      }
-      if (trendingProducts.includes(product._id.toString())) {
-        product.trending = true;
-      } else {
-        product.trending = false;
-      }
-      const createdAt = new Date(product.createdAt);
-      const isNewArrival = createdAt >= sevenDaysAgo;
-      if (isNewArrival) {
-        product.new_arrival = true;
-      } else {
-        product.new_arrival = false;
-      }
+       if (product?._id) {
+      product.best_seller = bestSellersProducts.includes(product._id.toString());
+      product.trending = trendingProducts.includes(product._id.toString());
+    
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      product.new_arrival = new Date(product.createdAt) >= sevenDaysAgo;
+    }
       return product;
     });
 
@@ -230,49 +221,36 @@ const getProductByName = async (req, res) => {
   }
   try {
     const name = req?.params?.name;
-    const product = await Product_eshop.findOne({ name: { $regex: new RegExp(`^${name}$`, "i") } })
-      .populate([
-        "collection",
-        "category",
-        "style",
-        "diamond_discount",
-        "color1",
-        "color2",
-        "color3",
-        "gold_discount",
-        "discount_on_total",
-        "labor",
-        "diamonds.diamond",
-        "recommendedFor",
-        {
-          path: "golds",
-          populate: [{ path: "making_charge" }, { path: "wastage_charge" }],
-        },
-      ])
-      .lean();
+    let product = await Product_eshop.findOneAndUpdate(
+      { name: { $regex: new RegExp(`^${name}$`, "i") } },
+      { $inc: { views: 1 } }, 
+      { new: true, lean: true } 
+    ).populate([
+      "collection",
+      "category",
+      "style",
+      "diamond_discount",
+      "color1",
+      "color2",
+      "color3",
+      "gold_discount",
+      "discount_on_total",
+      "labor",
+      "diamonds.diamond",
+      "recommendedFor",
+      {
+        path: "golds",
+        populate: [{ path: "making_charge" }, { path: "wastage_charge" }],
+      },
+    ]);
     if (product?._id) {
-      if (bestSellersProducts.includes(product._id.toString())) {
-        product.best_seller = true;
-      } else {
-        product.best_seller = false;
-      }
-      if (trendingProducts.includes(product._id.toString())) {
-        product.trending = true;
-      } else {
-        product.trending = false;
-      }
+      product.best_seller = bestSellersProducts.includes(product._id.toString());
+      product.trending = trendingProducts.includes(product._id.toString());
+    
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      const createdAt = new Date(product.createdAt);
-      const isNewArrival = createdAt >= sevenDaysAgo;
-      if (isNewArrival) {
-        product.new_arrival = true;
-      } else {
-        product.new_arrival = false;
-      }
+      product.new_arrival = new Date(product.createdAt) >= sevenDaysAgo;
     }
-    product.views = product.views + 1;
-    await product.save();
     res.status(200).json(product);
   } catch (error) {
     res.status(400).json({ error: error.message });
