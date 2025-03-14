@@ -3,7 +3,7 @@ const User = require("../models/user.model.js");
 const { sendOTPViaSMS,sendOTPViaEmail } = require("../services/otpService");
 const redisClient = require("../config/redis.js");
 const JWT = require("jsonwebtoken");
-const Address = require("../models/adresss.model.js");
+const Address = require("../models/address.model.js");
 
 const generateOTP = require("../utils/otpGenerator"); // Use this for Fake OTP in Testing Mode
 
