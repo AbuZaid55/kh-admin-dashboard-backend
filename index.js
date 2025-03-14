@@ -16,7 +16,7 @@ const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.j
 const maw_homepageCustomizationRouter = require("./routes/maw_homepage-customization.routes.js");
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 
-
+const orderRoutes = require("./routes/order.routes.js");
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
 const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
@@ -112,6 +112,9 @@ app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);
 
 // MAW Homepage Customization Routes
 app.use("/api/v1/maw-homepage/customization", maw_homepageCustomizationRouter);
+
+// Order Routes
+app.use("/api/v1/orders", orderRoutes);
 
 // Not Found Route & Error Middleware 
 app.use("*",(req, res, next) => {
