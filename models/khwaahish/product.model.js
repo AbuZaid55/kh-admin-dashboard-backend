@@ -13,6 +13,7 @@ const ProductSchema_khw = new mongoose.Schema(
     images: [{ _id: false, key: String, url: String }],
 
     youtube_link:{type:String},
+    whatsapp_link:{type:String},
 
     product_weight: { type: Number, default: 0 },
     gold_weight: { type: Number},

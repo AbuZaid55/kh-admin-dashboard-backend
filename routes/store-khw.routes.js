@@ -1,11 +1,13 @@
 const express = require("express")
 
 const { uploadFilesOnS3 } = require("../services/S3_Services")
+const upload = require("../middlewares/multerMiddleware");
 
 const { addCollection, getAllCollections, updateCollection, deleteCollection, getCollectionByName } = require("../controllers/khwaahish/collections.controller")
 const { addCategory, getAllCategories, updateCategory, deleteCategory, getCategoryByName } = require("../controllers/khwaahish/category.controller")
 const { addStyle, getAllStyles, updateStyle, deleteStyle } = require("../controllers/khwaahish/styles.controller")
 const { addProduct, getProducts, getProductById, updateProduct, deleteProduct, getProductForUpdate, getProductByName } = require("../controllers/khwaahish/product.controller")
+const { bulkUploadXlsx } = require("../controllers/khwaahish/bulkupload.controller")
 
 const router = express.Router()
 
@@ -25,6 +27,8 @@ router.post("/styles/add-style",addStyle)
 router.get("/styles/get-all-styles",getAllStyles)
 router.put("/styles/update-style/:id",updateStyle)
 router.delete("/styles/delete-style/:id",deleteStyle)
+
+router.post("/products/bulk-upload",upload.single("file"),bulkUploadXlsx)
 
 router.post("/products/add-product",uploadFilesOnS3,addProduct)
 router.post("/products/get-products",getProducts)
