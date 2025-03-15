@@ -74,7 +74,7 @@ async function createAdmin(phone, email, password) {
 // });
 
 app.get("/test",(req,res)=>{
-    res.status(200).json({message:"Server is running successfully"})
+    res.status(200).json({message:"Server is running successfully!"})
 })
 
 app.use((req, res, next) => {
