@@ -1,0 +1,71 @@
+[
+   {
+     "name": "Noor",
+     "tagline": "Shine bright like a diamond",
+     "description": "This collection is all about embracing inner light and radiance.",
+     "image": {
+       "key": "noor-img",
+       "url": "https://example.com/images/noor.jpg"
+     },
+     "nav_image": {
+       "key": "noor-nav",
+       "url": "https://example.com/images/noor-nav.jpg"
+     },
+     "showInNav": true,
+     "showInCollection": true,
+     "hasHomePage": false,
+     "pathOfHomePage": "/noor"
+   },
+   {
+     "name": "Aasai",
+     "tagline": "Passion and Love",
+     "description": "Aasai celebrates passion and desire with a bold spirit.",
+     "image": {
+       "key": "aasai-img",
+       "url": "https://example.com/images/aasai.jpg"
+     },
+     "nav_image": {
+       "key": "aasai-nav",
+       "url": "https://example.com/images/aasai-nav.jpg"
+     },
+     "showInNav": true,
+     "showInCollection": true,
+     "hasHomePage": true,
+     "pathOfHomePage": "/aasai"
+   },
+   {
+     "name": "Heer",
+     "tagline": "Elegance Personified",
+     "description": "Heer represents timeless elegance and grace.",
+     "image": {
+       "key": "heer-img",
+       "url": "https://example.com/images/heer.jpg"
+     },
+     "nav_image": {
+       "key": "heer-nav",
+       "url": "https://example.com/images/heer-nav.jpg"
+     },
+     "showInNav": false,
+     "showInCollection": true,
+     "hasHomePage": true,
+     "pathOfHomePage": "/heer"
+   },
+   {
+     "name": "Kiara",
+     "tagline": "Modern and Chic",
+     "description": "Kiara is a celebration of modern style and sophistication.",
+     "image": {
+       "key": "kiara-img",
+       "url": "https://example.com/images/kiara.jpg"
+     },
+     "nav_image": {
+       "key": "kiara-nav",
+       "url": "https://example.com/images/kiara-nav.jpg"
+     },
+     "showInNav": true,
+     "showInCollection": false,
+     "hasHomePage": false,
+     "pathOfHomePage": "/kiara"
+   }
+ ]
+ 
