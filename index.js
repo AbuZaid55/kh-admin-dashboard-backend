@@ -73,6 +73,11 @@ async function createAdmin(phone, email, password) {
 //     next();
 // });
 
+
+app.get("/test",(req,res)=>{
+    res.status(200).json({message:"Server is running successfully"})
+})
+
 app.use((req, res, next) => {
     req.setTimeout(600000); // ⏳ 10-minute timeout for incoming requests
     res.setTimeout(600000); // ⏳ 10-minute timeout for responses

@@ -53,7 +53,8 @@ const getProducts = async (req, res) => {
       const categories = await Category_khw.find({ _id: { $in: uniqueCategories } }).select("name");
       const styles = await Style_khw.find({ _id: { $in: uniqueStyles } }).select("name");
   
-      const data = await Product_khw.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit);
+      const data = await Product_khw.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
+      
       res.status(200).json({ products: data, categories: categories, styles: styles, totalRecords });
     }else{
       const data = await Product_khw.find(filter).sort({ createdAt: -1 });
