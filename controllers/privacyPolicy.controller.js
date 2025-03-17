@@ -1,4 +1,3 @@
-const express = require("express");
 const PrivacyPolicy = require("../models/privacyPolicy.js");
 
 // Get Privacy Policy

@@ -8,10 +8,8 @@ const userProfileRouter=require("./routes/user.profile.routes.js");
 const userRouter=require("./routes/user.auth.routes.js");
 const adminAuthRouter = require("./routes/admin.auth.routes.js");
 const pressReleaseRoutes = require('./routes/pressRelease.routes');
-const storeEshopRouter = require("./routes/store-eshop.routes.js")
+const storeEshopRouter = require("./routes/store-eshop.routes.js");
 
-const commonCustomizationRoutes= require("./routes/common-customization.routes.js");
-const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.js");
 
 const storeKhwRouter = require("./routes/store-khw.routes.js");
 
@@ -22,6 +20,7 @@ const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.j
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
 const collectionHomepageCustomizationRouter = require("./routes/collection_homepage-customization.routes.js");
+const seoRoutes = require("./routes/seo.routes.js");
 
 const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
@@ -97,6 +96,7 @@ app.use("/admin/auth", adminAuthRouter);
 app.use("/eshop/customization/",eshopCustomizationRoutes);
 app.use("/common/customization/", commonCustomizationRoutes);
 app.use("/admin/auth", adminAuthRouter);
+app.use("/seo", seoRoutes);
 
 // Customization khwaahish 
 app.use("/khwaahish/customization/homepage",khwaahishCustomizationRoutes);
