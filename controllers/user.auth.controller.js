@@ -14,11 +14,12 @@ const { AssistantsKnowledgeInstance } = require("twilio/lib/rest/assistants/v1/a
 const registerPhoneOTP = async (req, res) => {
   try {
     // Extract the phone number from the request body
-    console.log("Request Body:", req.body);
-    const { phone } = req.body;
-    console.log("phone:", phone);
+    const { phone, country_code } = req.body
 
     // Validate phone number (you can add more validation for phone format if needed)
+    if (!country_code) {
+      return res.status(400).json({ message: "Country code is required" });
+    }
     if (!phone) {
       return res.status(400).json({ message: "Phone number is required" });
     }
@@ -28,14 +29,7 @@ const registerPhoneOTP = async (req, res) => {
 
     // If the user does not exist, create a new user
     if (!user) {
-      user = await User.create({ phone });
-    }
-
-    // If the user already exists and the phone is verified, return a message
-    if (user.phone && user.phone_verified) {
-      return res
-        .status(202)
-        .json({ message: "User already registered and verified." });
+      user = await User.create({ phone, country_code });
     }
 
     // Check if OTP already exists and return remaining expiry time
@@ -54,14 +48,14 @@ const registerPhoneOTP = async (req, res) => {
     const hashedOTP = await bcrypt.hash(otp, 10);
     const otpExpiry = 2 * 60; // 2 minutes in seconds
 
-    // Store OTP in Redis with expiry
-    await redisClient.setEx(`OTP-${phone}`, otpExpiry, hashedOTP);
-
     // Send OTP to the user's phone number
-    await sendOTPViaSMS(phone, otp);
+    await sendOTPViaSMS(country_code + phone, otp);
+
+    // Store OTP in Redis with expiry
+     await redisClient.setEx(`OTP-${phone}`, otpExpiry, hashedOTP);
 
     // Respond back with OTP sent success
-    res.status(202).json({success:true, message: "OTP SENT SUCCESS" });
+    res.status(202).json({ success: true, message: "Otp Sent Successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -75,6 +69,13 @@ const registerPhoneOTPVerify = async (req, res) => {
     // Extract phone and OTP from request body
     const { phone, otp } = req.body;
 
+    if (!phone) {
+      return res.status(400).json({ message: "Phone number is required" });
+    }
+    if (!otp) {
+      return res.status(400).json({ message: "Otp is required" });
+    }
+
     // Fetch user by phone number (assuming phone is unique)
     let user = await User.findOne({ phone }).select("+password");
 
@@ -85,18 +86,24 @@ const registerPhoneOTPVerify = async (req, res) => {
 
     // If the user already exists and the phone is verified, return a message
     if (user.phone && user.phone_verified) {
-      return res
-        .status(202)
-        .json({ message: "User already registered and verified." });
+      // set token for login user
+      const token = generateToken(user);
+      res.cookie("auth_token", token, {
+        httpOnly: true, // Prevent access from JavaScript
+        secure: process.env.NODE_ENV === "production", // HTTPS in production
+        sameSite: "Strict", // CSRF protection
+        maxAge:24* 60 * 60 * 1000, // 24 hour expiry 
+        path: "/",
+      });
+      await redisClient.del(`OTP-${phone}`);
+      return res.status(202).json({ message: "User already registered and verified." });
     }
 
     // Get OTP from Redis
     const storedOTP = await redisClient.get(`OTP-${phone}`);
 
     if (!storedOTP) {
-      return res
-        .status(400)
-        .json({ message: "OTP expired. Please request a new one." });
+      return res.status(400).json({ message: "OTP expired. Please request a new one." });
     }
 
     const verifyOtp = await bcrypt.compare(otp, storedOTP);
@@ -122,21 +129,12 @@ const registerPhoneOTPVerify = async (req, res) => {
     const token = generateToken(user);
 
     // Set JWT token in HTTP-only cookie
-    // res.cookie("auth_token", token, {
-    //   httpOnly: true, // Prevent access from JavaScript
-    //   secure: process.env.NODE_ENV === "production", // HTTPS in production
-    //   sameSite: "Strict", // CSRF protection
-    //   maxAge: 60 * 60 * 1000, // 1 hour expiry
-    //   path: "/", 
-    // });
-
-     // Set JWT token in HTTPS-only cookie
-     res.cookie("auth_token", token, {
-      httpOnly: true,  // Prevents client-side access
-      secure: true,   // Set false for HTTPS (development)
-      sameSite: "none", // Allows same-site requests
-      maxAge: 24 * 60 * 60 * 1000 *7, // 7 day
-      path:"/"
+    res.cookie("auth_token", token, {
+      httpOnly: true, // Prevent access from JavaScript
+      secure: process.env.NODE_ENV === "production", // HTTPS in production
+      sameSite: "Strict", // CSRF protection
+      maxAge:24* 60 * 60 * 1000, // 24 hour expiry
+      path: "/",
     });
 
     // Respond with success message and passkey
@@ -165,9 +163,7 @@ const loginPhoneOTP = async (req, res) => {
     const user = await User.findOne({ phone });
 
     if (!user || !user.phone_verified) {
-      return res
-        .status(404)
-        .json({ message: "User not found or phone not verified." });
+      return res.status(404).json({ message: "User not found or phone not verified." });
     }
 
     // Check if OTP already exists and return remaining expiry time
@@ -192,7 +188,7 @@ const loginPhoneOTP = async (req, res) => {
     // Send OTP to the user's phone number
     await sendOTPViaSMS(phone, otp);
 
-    res.status(202).json({success:true, message: "OTP SENT SUCCESS" });
+    res.status(202).json({ success: true, message: "OTP SENT SUCCESS" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -205,18 +201,14 @@ const loginPhoneOTPVerify = async (req, res) => {
     // Check if user exists and phone is verified
     const user = await User.findOne({ phone });
     if (!user || !user.phone_verified) {
-      return res
-        .status(404)
-        .json({ message: "User not found or phone not verified." });
+      return res.status(404).json({ message: "User not found or phone not verified." });
     }
 
     // Get OTP from Redis
     const storedOTP = await redisClient.get(`OTP-${phone}`);
 
     if (!storedOTP) {
-      return res
-        .status(400)
-        .json({ message: "OTP expired. Please request a new one." });
+      return res.status(400).json({ message: "OTP expired. Please request a new one." });
     }
 
     const verifyOtp = await bcrypt.compare(otp, storedOTP);
@@ -239,16 +231,16 @@ const loginPhoneOTPVerify = async (req, res) => {
     //   path: "/"
     // });
 
-     // Set JWT token in HTTPS-only cookie
-     res.cookie("auth_token", token, {
-      httpOnly: true,  // Prevents client-side access
-      secure: true,   // Set false for HTTPS (development)
+    // Set JWT token in HTTPS-only cookie
+    res.cookie("auth_token", token, {
+      httpOnly: true, // Prevents client-side access
+      secure: true, // Set false for HTTPS (development)
       sameSite: "none", // Allows same-site requests
-      maxAge: 24 * 60 * 60 * 1000 *7, // 7 day
-      path:"/"
+      maxAge: 24 * 60 * 60 * 1000 * 7, // 7 day
+      path: "/",
     });
 
-    res.status(200).json({success:true, message: "Login successful" });
+    res.status(200).json({ success: true, message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -260,17 +252,13 @@ const loginPhonePasskey = async (req, res) => {
 
     // Validate phone and passkey
     if (!phone || !passkey) {
-      return res
-        .status(400)
-        .json({ message: "Phone number and passkey are required." });
+      return res.status(400).json({ message: "Phone number and passkey are required." });
     }
 
     // Fetch user from DB
     const user = await User.findOne({ phone }).select("+password");
     if (!user || !user.phone_verified) {
-      return res
-        .status(404)
-        .json({ message: "User not found or phone not verified." });
+      return res.status(404).json({ message: "User not found or phone not verified." });
     }
 
     // Compare provided passkey with stored hashed password
@@ -291,16 +279,16 @@ const loginPhonePasskey = async (req, res) => {
     //   path: "/",
     // });
 
-     // Set JWT token in HTTPS-only cookie
-     res.cookie("token", token, {
-      httpOnly: true,  // Prevents client-side access
-      secure: true,   // Set false for HTTPS (development)
+    // Set JWT token in HTTPS-only cookie
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents client-side access
+      secure: true, // Set false for HTTPS (development)
       sameSite: "none", // Allows same-site requests
-      maxAge: 24 * 60 * 60 * 1000 *7, // 7 day
-      path:"/"
+      maxAge: 24 * 60 * 60 * 1000 * 7, // 7 day
+      path: "/",
     });
 
-    res.status(200).json({success:true, message: "Login successful" });
+    res.status(200).json({ success: true, message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -322,9 +310,7 @@ const loginEmailOTP = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user || !user.email_verified) {
-      return res
-        .status(404)
-        .json({ message: "User not found or email not verified." });
+      return res.status(404).json({ message: "User not found or email not verified." });
     }
 
     // Check if OTP already exists and return remaining expiry time
@@ -349,7 +335,7 @@ const loginEmailOTP = async (req, res) => {
     // Send OTP to the user's phone number
     await sendOTPViaSMS(phone, otp);
 
-    res.status(202).json({success:true, message: "OTP SENT SUCCESS" });
+    res.status(202).json({ success: true, message: "OTP SENT SUCCESS" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -362,18 +348,14 @@ const loginEmailOTPVerify = async (req, res) => {
     // Check if user exists and phone is verified
     const user = await User.findOne({ email });
     if (!user || !user.email_verified) {
-      return res
-        .status(404)
-        .json({ message: "User not found or email not verified." });
+      return res.status(404).json({ message: "User not found or email not verified." });
     }
 
     // Get OTP from Redis
     const storedOTP = await redisClient.get(`OTP-${email}`);
 
     if (!storedOTP) {
-      return res
-        .status(400)
-        .json({ message: "OTP expired. Please request a new one." });
+      return res.status(400).json({ message: "OTP expired. Please request a new one." });
     }
 
     const verifyOtp = await bcrypt.compare(otp, storedOTP);
@@ -393,38 +375,46 @@ const loginEmailOTPVerify = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
       maxAge: 60 * 60 * 1000 * 24 * 7, // 1 Week expiry
-      path: "/"
+      path: "/",
     });
 
-    res.status(200).json({success:true, message: "Login successful" });
+    res.status(200).json({ success: true, message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-
 /**
  * 🚀 Logout
  */
-const logout = async(req, res) => {
+const logout = async (req, res) => {
   try {
     res.clearCookie("auth_token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
-      path: "/", 
+      path: "/",
     });
-    res.status(200).json({success:true, message: "Logged out successfully"});
+    res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Admin profile 
-const Adminprofile=async(req, res) => {
+const Userprofile = async(req,res)=>{
   try {
-    const user=await User.findById(req.user.id);
-    res.status(200).json({user});
+    const user = await User.findById(req?.user?.id)
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+
+// Admin profile
+const Adminprofile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -439,5 +429,6 @@ module.exports = {
   loginPhoneOTPVerify,
   loginPhonePasskey,
   logout,
-  Adminprofile
+  Userprofile,
+  Adminprofile,
 };

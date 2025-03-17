@@ -33,10 +33,10 @@ const addProduct = async (req, res) => {
 
 const getProducts = async (req, res) => {
   try {
-    const { _id, collection, category, style, page,limit } = req.body;
+    const { _id, collection, category, style, page, limit } = req.body;
 
     let filter = {};
-    const skip = (page - 1) * limit; 
+    const skip = (Number(page) - 1) * Number(limit); 
 
     if (_id) filter._id = _id;
     if (collection) filter.collection = collection;
@@ -53,7 +53,7 @@ const getProducts = async (req, res) => {
       const categories = await Category_khw.find({ _id: { $in: uniqueCategories } }).select("name");
       const styles = await Style_khw.find({ _id: { $in: uniqueStyles } }).select("name");
   
-      const data = await Product_khw.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
+      const data = await Product_khw.find(filter).sort({ createdAt: -1, _id: -1 }).skip(skip).limit(limit).lean();
       
       res.status(200).json({ products: data, categories: categories, styles: styles, totalRecords });
     }else{

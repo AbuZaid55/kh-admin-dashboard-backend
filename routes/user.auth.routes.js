@@ -8,6 +8,7 @@ const {
   loginPhoneOTPVerify,
   loginPhonePasskey,
   logout,
+  Userprofile,
 } = require("../controllers/user.auth.controller.js");
 
 // ROUTES      --REGISTER/LOGIN/LOGOUT--
@@ -30,10 +31,11 @@ router.post("/login/phone-otp-verify", loginPhoneOTPVerify);
 // LOGIN PASSKEY      ROUTE -> /user/auth/login/passkey
 router.post("/login/passkey", loginPhonePasskey);
 
+router.get('/current-user',isAuth,Userprofile)
 /**
  *  LOGOUT
  */
 // logout            ROUTE -> /user/auth/logout
-router.post("/logout", isAuth, logout);
+router.get("/logout", isAuth, logout);
 
 module.exports = router;
