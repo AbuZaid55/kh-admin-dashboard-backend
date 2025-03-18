@@ -56,10 +56,8 @@ const addProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   let bestSellersProducts = [];
   let trendingProducts = [];
-  // const redisBestSeller = await redisClient.get("best_seller_products");
-  // const redisTrending = await redisClient.get("trending_products");
-  const redisBestSeller = false;
-  const redisTrending = false;
+  const redisBestSeller = await redisClient.get("best_seller_products");
+  const redisTrending = await redisClient.get("trending_products");
   if (redisBestSeller) {
     bestSellersProducts = JSON.parse(redisBestSeller);
   } else {
@@ -122,7 +120,7 @@ const getProducts = async (req, res) => {
           select: "name",
         },
       ])
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
@@ -201,10 +199,8 @@ const getProductById = async (req, res) => {
 const getProductByName = async (req, res) => {
   let bestSellersProducts = [];
   let trendingProducts = [];
-  // const redisBestSeller = await redisClient.get("best_seller_products");
-  // const redisTrending = await redisClient.get("trending_products");
-  const redisBestSeller = false;
-  const redisTrending = false;
+  const redisBestSeller = await redisClient.get("best_seller_products");
+  const redisTrending = await redisClient.get("trending_products");
   if (redisBestSeller) {
     bestSellersProducts = JSON.parse(redisBestSeller);
   } else {

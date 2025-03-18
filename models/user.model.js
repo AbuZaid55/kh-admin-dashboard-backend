@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  name: { type: String, required: false, trim: true },
+  name: { type: String, trim: true, default:"User" },
+  country_code:{type:String,required:true,trim:true},
   phone: { type: String, unique: true, sparse: true },
   phone_verified: { type: Boolean, default: false },
   email: { type: String, unique: true, sparse: true, trim:true},
@@ -14,7 +15,7 @@ const UserSchema = new mongoose.Schema({
 
   profile: {
     key: { type: String },
-    secure_url: { type: String, default: "http://default-profile.jpg" },
+    url: { type: String },
   },
   permissions: {
     canManageUsers: { type: Boolean, default: false },

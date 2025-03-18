@@ -16,6 +16,7 @@ const khwaahishCustomizationRoutes= require("./routes/khw-customization.routes.j
 const maw_homepageCustomizationRouter = require("./routes/maw_homepage-customization.routes.js");
 const eshopCustomizationRoutes=require("./routes/eshop-customization.routes.js");
 
+const cartRoutes = require("./routes/cart.routes.js");
 const orderRoutes = require("./routes/order.routes.js");
 
 const qoh_HomepageCustomizationRouter = require("./routes/qoh_homepage-customization.routes.js");
@@ -28,6 +29,7 @@ const errorMiddleware = require("./middlewares/error.js");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const User = require("./models/user.model");
+const { isAuth } = require("./middlewares/authMiddleware.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -65,28 +67,13 @@ async function createAdmin(phone, email, password) {
 // createAdmin("actualadminPhone", "actualAdminEmail","DummyPass").catch(err => console.log(err));
 
 
-
-// Increase Express request timeout to 10 minutes
-// app.use((req, res, next) => {
-//     req.setTimeout(600000); // ⏳ 10-minute timeout for incoming requests
-//     res.setTimeout(600000); // ⏳ 10-minute timeout for responses
-//     next();
-// });
-
-
 app.get("/test",(req,res)=>{
     res.status(200).json({message:"Server is running successfully"})
 })
 
-app.use((req, res, next) => {
-    req.setTimeout(600000); // ⏳ 10-minute timeout for incoming requests
-    res.setTimeout(600000); // ⏳ 10-minute timeout for responses
-    next();
-});
-
 // USER AUTH API 
 app.use(cors({
-    origin:"*",
+    origin:[...ALLOWED_ORIGINS],
     credentials:true
 }))
 app.use("/user/auth",userRouter);
@@ -95,8 +82,11 @@ app.use('/api/press-releases', pressReleaseRoutes);
 app.use('/store/eshop', storeEshopRouter);
 app.use('/store/khw', storeKhwRouter);
 
+// Cart Routes
+app.use('/api/v1/carts',isAuth,cartRoutes);
 
-app.use("/admin/auth", adminAuthRouter);
+
+app.use("/admin/auth",isAuth, adminAuthRouter);
 
 
 // Customization
