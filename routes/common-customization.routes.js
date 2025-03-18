@@ -18,7 +18,6 @@ const {
     deleteFooter
 } =require("../controllers/footer.controller.js")
 const express=require("express");
-const {getFooters,createFooter,getFooter,updateFooter,deleteFooter,getFooterByDomain} = require("../controllers/footer.controller.js")
 const router=express.Router();
 const { getOurStory, updateOurDesire, addDesireFeat, deleteDesireFeat, updateOurValue, addValue, deleteValue, updatePromoter, addpromoter, deletepromoter, updateOurLogo, toggleOurStory } = require('../controllers/ourStory.controller');
 
