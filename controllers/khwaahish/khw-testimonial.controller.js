@@ -1,4 +1,4 @@
-const Testimonial = require("../../models/eshop/testimonial.model");
+const Testimonial = require("../../models/khwaahish/khw-testimonial.model");
 const { deleteFileFromS3 } = require("../../services/S3_Services"); // Adjust path as needed
 
 // Create a new testimonial
@@ -13,12 +13,12 @@ exports.createTestimonial = async (req, res) => {
     if (!collection_id) {
       return res.status(400).json({ message: "Collection ID is required" });
     }
-    console.log(collection_id);
+    console.log(req.body);
     const newTestimonial = await Testimonial.create({
       name,
       designation,
       testimonial,
-      khw_collection_id: collection_id,
+      collection_id,
       profile_img,
     });
 
