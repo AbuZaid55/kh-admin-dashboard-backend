@@ -79,7 +79,7 @@ app.use((req, res, next) => {
 
 // USER AUTH API 
 app.use(cors({
-    origin:["http://localhost:5173"],
+    origin:[...ALLOWED_ORIGINS],
     credentials:true
 }))
 app.use("/user/auth",userRouter);
