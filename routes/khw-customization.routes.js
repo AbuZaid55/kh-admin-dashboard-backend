@@ -47,25 +47,25 @@ router.put("/toggle-section", toggleSection);
 
 
 // CollectionAd routes
-router.get("/collectio-homepage", collectionHomepageController.getCollectionAd);
+router.get("/collection-homepage", collectionHomepageController.getCollectionAd);
 
-router.put("/collectio-homepage/general", uploads.fields([{ name: "hero_desktop_banner_img" }, { name: "hero_mobile_banner_img" }, { name: "collection_logo" }, { name: "ad_video" }]), collectionHomepageController.updateGeneral);
+router.put("/collection-homepage/general", uploads.fields([{ name: "hero_desktop_banner_img" }, { name: "hero_mobile_banner_img" }, { name: "collection_logo" }, { name: "ad_video" }]), collectionHomepageController.updateGeneral);
 
-router.put("/collectio-homepage/jewel-at-glance", uploads.fields([{ name: "jewel_at_glance_images" }]), collectionHomepageController.updateJewelAtGlance);
+router.put("/collection-homepage/jewel-at-glance", uploads.fields([{ name: "jewel_at_glance_images" }]), collectionHomepageController.updateJewelAtGlance);
 
-router.put("/collectio-homepage/category-section", uploads.fields([{ name: "category_section_images" }]), collectionHomepageController.updateCategorySection);
+router.put("/collection-homepage/category-section", uploads.fields([{ name: "category_section_images" }]), collectionHomepageController.updateCategorySection);
 
-router.put("/collectio-homepage/curator-thought", uploads.single("curator_profileImg"), collectionHomepageController.updateCuratorThought);
+router.put("/collection-homepage/curator-thought", uploads.single("curator_profileImg"), collectionHomepageController.updateCuratorThought);
 
-router.put("/collectio-homepage/toggle-section", collectionHomepageController.toggleSection);
+router.put("/collection-homepage/toggle-section", collectionHomepageController.toggleSection);
 
-router.put("/collectio-homepage/collection", uploads.single("collection_data_image"), collectionHomepageController.updateCollection);
+router.put("/collection-homepage/collection", uploads.single("collection_data_image"), collectionHomepageController.updateCollection);
 
 // updated
-router.put("/topic", collectionHomepageController.updateTopicSection);
+router.put("/collection-homepage/topic", collectionHomepageController.updateTopicSection);
 
-router.post("/topic",uploads.fields([{ name: "topicImages" }]), collectionHomepageController.addTopic);
+router.post("/collection-homepage/topic",uploads.fields([{ name: "topicImages" }]), collectionHomepageController.addTopic);
 
-router.delete("/topic", collectionHomepageController.deleteTopic);
+router.delete("/collection-homepage/topic", collectionHomepageController.deleteTopic);
 
 module.exports = router;

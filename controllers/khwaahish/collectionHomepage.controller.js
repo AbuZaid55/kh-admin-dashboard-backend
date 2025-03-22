@@ -227,6 +227,7 @@ exports.updateTopicSection = async (req, res) => {
 // updated
 exports.addTopic = async (req, res) => {
     try {
+        console.log("JKKj");
         
         const { collection_homepage_name, topicTitle, topicDesc } = req.body;
         topic={};

@@ -182,8 +182,9 @@ const addHighJewelCarousal = async (req, res) => {
 
     homepage.high_jewel_list.push(newHighJewel);
     await homepage.save();
+    let addednewHighJewel=homepage.high_jewel_list[homepage?.high_jewel_list?.length -1];
 
-    res.status(201).json({ success: true, message: 'High Jewel added successfully', data: newHighJewel });
+    res.status(201).json({ success: true, message: 'High Jewel added successfully', data: addednewHighJewel });
   } catch (error) {
     console.error("Error adding High Jewel:", error);
     res.status(500).json({ success: false, message: 'Failed to add High Jewel' });
@@ -278,8 +279,9 @@ const addQOHCarousal = async (req, res) => {
 
     homepage.qoh_section_list.push(newQOH);
     await homepage.save();
+    let addedQOHCarousal=homepage.qoh_section_list[homepage?.qoh_section_list?.length-1]
 
-    res.status(201).json({ success: true, message: 'High Jewel added successfully', data: newQOH });
+    res.status(201).json({ success: true, message: 'High Jewel added successfully', data: addedQOHCarousal });
   } catch (error) {
     console.error("Error adding High Jewel:", error);
     res.status(500).json({ success: false, message: 'Failed to add High Jewel' });
@@ -451,8 +453,9 @@ const addPromise = async (req, res) => {
 
     homepage.promise_list.push(newPromise);
     await homepage.save();
+    let addednewPromise=homepage.promise_list[homepage?.promise_list?.length-1];
 
-    res.status(201).json({ success: true, message: 'Promise added successfully', data: newPromise });
+    res.status(201).json({ success: true, message: 'Promise added successfully', data: addednewPromise });
   } catch (error) {
     console.error("Error adding promise:", error);
     res.status(500).json({ success: false, message: 'Failed to add promise' });
@@ -617,7 +620,7 @@ const addStoreFeat = async (req, res) => {
     homepage.store_feat_list.push(newStoreFeat);
     await homepage.save();
 
-    res.status(201).json({ success: true, message: 'Promise added successfully', data: newStoreFeat });
+    res.status(201).json({ success: true, message: 'Promise added successfully', data: homepage.store_feat_list[homepage?.store_feat_list?.length -1] });
   } catch (error) {
     console.error("Error adding promise:", error);
     res.status(500).json({ success: false, message: 'Failed to add promise' });
@@ -706,7 +709,7 @@ const addFaq = async (req, res) => {
     homepage.faq_list.push(newFaq);
     await homepage.save();
 
-    res.status(201).json({ success: true, message: 'Promise added successfully', data: newFaq });
+    res.status(201).json({ success: true, message: 'Promise added successfully', data: homepage.faq_list[homepage?.faq_list?.length -1] });
   } catch (error) {
     console.error("Error adding promise:", error);
     res.status(500).json({ success: false, message: 'Failed to add promise' });

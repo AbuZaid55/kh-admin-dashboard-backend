@@ -8,6 +8,8 @@ const { deleteFileByLocationFromS3 } = require("../services/S3_Services.js");
 // Desire Section
 exports.getOurStory = async (req, res) => {
      try{
+        console.log("Our ");
+        
         let ourStory = await OurStory.findOne({ page:"Our Story" });
         if (!ourStory) {
             ourStory = new OurStory({ page:"Our Story" });
@@ -91,6 +93,7 @@ exports.updateOurDesire = async (req, res) => {
         }
 
         if (desire_image && ourStory.desire_image) {
+            console.log(ourStory.desire_image);
             await deleteFileByLocationFromS3(ourStory.desire_image);
         }
 
@@ -315,7 +318,10 @@ exports.addpromoter=async(req,res)=>{
 
 exports.deletepromoter=async(req,res)=>{
     try {
-        const { id } = req.params;
+        console.log("HII");
+        
+        const { id } = req.query;
+        console.log(id);
 
         let ourStory = await OurStory.findOne({ page:"Our Story" });
         if (!ourStory) {
@@ -323,7 +329,9 @@ exports.deletepromoter=async(req,res)=>{
             await ourStory.save();
         }
         deletePromoterObj = ourStory.promoters_list.filter(feat => feat._id.toString() == id);
-        deleteFileByLocationFromS3(deletePromoterObj[0].profileImg);
+        console.log(deletePromoterObj[0].profileImg);
+        
+        await deleteFileByLocationFromS3(deletePromoterObj[0].profileImg);
         ourStory.promoters_list = ourStory.promoters_list.filter(feat => feat._id.toString() !== id);
         
         await ourStory.save();

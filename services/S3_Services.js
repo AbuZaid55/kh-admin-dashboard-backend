@@ -5,7 +5,8 @@ const s3 = require("../config/S3");
 
 const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || '';
 
-const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif" ];
+const allowedImageTypes = ["image/jpg", "image/jpeg", "image/png", "image/webp","image/avif" ,"video/mp4", "video/webm", "video/ogg"  // video types
+];
 
 const uploads = multer({
   storage: multerS3({
